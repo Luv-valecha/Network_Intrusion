@@ -2,6 +2,8 @@ from decision_tree import DecisionTreeClassifier
 import numpy as np
 import pandas as pd
 import random
+import pickle
+import os
 
 class RandomForestClassifier:
 
@@ -54,3 +56,27 @@ class RandomForestClassifier:
 
         # Calculate feature importance
         self.feature_importances = self._calculate_rf_feature_importance(self.base_learner_list)
+
+    # function to save the model
+    def save_model(self, filename):
+        try:
+            with open(filename, 'wb') as file:
+                pickle.dump(self, file)
+            print(f"Model saved to {filename}")
+        except (OSError, IOError) as e:
+            print(f"Error saving model: {e}")
+
+    # function to load the saved model
+    @staticmethod
+    def load_model(filename):
+        if not os.path.exists(filename):
+            print(f"Error: File '{filename}' not found.")
+            return None
+        try:
+            with open(filename, 'rb') as file:
+                model = pickle.load(file)
+            print(f"Model loaded from {filename}")
+            return model
+        except (pickle.UnpicklingError, EOFError) as e:
+            print(f"Error loading model: {e}")
+            return None
