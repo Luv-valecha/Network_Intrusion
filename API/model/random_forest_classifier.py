@@ -8,7 +8,7 @@ import os
 class RandomForestClassifier:
 
     # constructor
-    def __init__(self, n_learners=10, max_depth=5, min_samples_leaf=1, min_information_gain=0.0, \
+    def __init__(self, n_learners=10, max_depth=5, min_samples_leaf=1, min_information_gain=0.0,
                  numb_of_features_splitting=None, bootstrap_sample_size=None):
         self.n_base_learner = n_learners
         self.max_depth = max_depth
@@ -56,6 +56,42 @@ class RandomForestClassifier:
 
         # Calculate feature importance
         self.feature_importances = self._calculate_rf_feature_importance(self.base_learner_list)
+
+    # function to predict decision for base learners
+    def base_learners_predict(self,  X_set: np.array) -> list:
+
+        pred_prob_list = []
+
+        # add predicted probability from every decision tree in the list
+        for base_learner in self.base_learner_list:
+            pred_prob_list.append(base_learner.predict_proba(X_set))
+
+        return pred_prob_list
+
+    # predict function for random forest
+    def probability_predict(self, X_set: np.array) -> list:
+
+        pred_probs = []
+        base_learners_pred_probs = self.base_learners_predict(X_set)
+
+        # averaging the predicted probability from each decision tree 
+        for i in range(X_set.shape[0]):
+            base_learner_probs_for_obs = [a[i] for a in base_learners_pred_probs]
+            obs_average_pred_probs = np.mean(base_learner_probs_for_obs, axis=0)
+            pred_probs.append(obs_average_pred_probs)
+
+        return pred_probs
+
+    # main predict function to give the predicted label
+    def predict(self, X_set: np.array) -> np.array:
+
+        pred_probs = self.predict_proba(X_set)
+
+        # highest probability label is predicted
+        preds = np.argmax(pred_probs, axis=1)
+        
+        return preds
+
 
     # function to save the model
     def save_model(self, filename):
