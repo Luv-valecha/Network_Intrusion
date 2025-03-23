@@ -3,9 +3,12 @@ import numpy as np
 from collections import Counter
 
 class DecisionTree:
-    def __init__(self, max_depth=10):
-        """Initialize the decision tree with a maximum depth."""
+    def __init__(self, max_depth=10, min_samples_leaf=1, min_information_gain=0.0, numb_of_features_splitting=None):
+        """Initialize the decision tree with additional parameters."""
         self.max_depth = max_depth
+        self.min_samples_leaf = min_samples_leaf                        # Minimum samples required to split a node  
+        self.min_information_gain = min_information_gain                # Minimum information gain required for split
+        self.numb_of_features_splitting = numb_of_features_splitting    # Limit on number of features to consider for splitting
         self.root = None
 
     def fit(self, data, labels):
@@ -14,13 +17,12 @@ class DecisionTree:
 
     def _fit(self, data, labels, depth):
         """Recursively builds the decision tree."""
-        if depth == self.max_depth or len(np.unique(labels)) == 1:
-            # If pure or max depth reached, return a leaf node
+        if depth == self.max_depth or len(np.unique(labels)) == 1 or len(labels) < self.min_samples_leaf:
             return DecisionTreeNode(value=self._most_common_label(labels))
 
         # Find best feature and threshold for splitting
         best_feature, best_threshold = self._best_split(data, labels)
-
+        
         # Partition data based on the best threshold
         left_mask = data[:, best_feature] <= best_threshold
         right_mask = ~left_mask
@@ -72,6 +74,9 @@ class DecisionTree:
         best_IG = 0
         best_threshold = 0
         best_feature_index = None
+
+        if self.numb_of_features_splitting:
+            n_features = np.random.choice(n_features, self.numb_of_features_splitting, replace=False)
 
         # Loop through each feature to calculate information gain
         for i in range(n_features):
