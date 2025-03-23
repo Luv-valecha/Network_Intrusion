@@ -3,8 +3,6 @@ import numpy as np
 from collections import Counter
 
 class DecisionTree:
-    """A simple decision tree classifier using information gain and entropy."""
-
     def __init__(self, max_depth=10):
         """Initialize the decision tree with a maximum depth."""
         self.max_depth = max_depth
@@ -35,7 +33,7 @@ class DecisionTree:
         right_child = self._fit(data[right_mask], labels[right_mask], depth + 1)
 
         return DecisionTreeNode(feature=best_feature, threshold=best_threshold, left=left_child, right=right_child)
-
+    # To Label the Leaf Node
     def _most_common_label(self, labels):
         """Return the most common label in the dataset."""
         return Counter(labels).most_common(1)[0][0]
