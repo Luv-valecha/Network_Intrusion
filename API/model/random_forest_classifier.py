@@ -1,4 +1,4 @@
-from decision_tree import DecisionTreeClassifier
+from API.model.Decision_Tree import DecisionTree
 import numpy as np
 import pandas as pd
 import random
@@ -47,7 +47,7 @@ class RandomForestClassifier:
 
         # train the base decision trees
         for base_learner_idx in range(self.n_base_learner):
-            base_learner = DecisionTreeClassifier(max_depth=self.max_depth, min_samples_leaf=self.min_samples_leaf,
+            base_learner = DecisionTree(max_depth=self.max_depth, min_samples_leaf=self.min_samples_leaf,
                                         min_information_gain=self.min_information_gain, 
                                         numb_of_features_splitting=self.numb_of_features_splitting)
             
