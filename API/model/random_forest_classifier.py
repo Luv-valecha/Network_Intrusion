@@ -51,7 +51,7 @@ class RandomForestClassifier:
                                         min_information_gain=self.min_information_gain, 
                                         numb_of_features_splitting=self.numb_of_features_splitting)
             
-            base_learner.fit(bootstrap_samples_X[base_learner_idx], bootstrap_samples_Y[base_learner_idx])
+            base_learner.train(bootstrap_samples_X[base_learner_idx], bootstrap_samples_Y[base_learner_idx])
             self.base_learner_list.append(base_learner)
 
         # Calculate feature importance

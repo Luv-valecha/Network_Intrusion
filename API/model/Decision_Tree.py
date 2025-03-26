@@ -11,12 +11,12 @@ class DecisionTree:
         self.root = None
         self.unique_labels = None
 
-    def fit(self, data, labels):
+    def train(self, data, labels):
         """Build the decision tree recursively."""
         self.unique_labels = np.unique(labels)  # Store unique labels for probability computation
-        self.root = self._fit(data, labels, depth=0)
+        self.root = self._train(data, labels, depth=0)
 
-    def _fit(self, data, labels, depth):
+    def _train(self, data, labels, depth):
         """Recursively builds the decision tree."""
         if depth == self.max_depth or len(np.unique(labels)) == 1 or len(labels) < self.min_samples_leaf:
             return DecisionTreeNode(value=self._most_common_label(labels))
@@ -32,8 +32,8 @@ class DecisionTree:
         if np.all(left_mask) or np.all(right_mask):
             return DecisionTreeNode(value=self._most_common_label(labels))
 
-        left_child = self._fit(data[left_mask], labels[left_mask], depth + 1)
-        right_child = self._fit(data[right_mask], labels[right_mask], depth + 1)
+        left_child = self._train(data[left_mask], labels[left_mask], depth + 1)
+        right_child = self._train(data[right_mask], labels[right_mask], depth + 1)
 
         return DecisionTreeNode(feature=best_feature, threshold=best_threshold, left=left_child, right=right_child)
 
@@ -148,7 +148,7 @@ class DecisionTreeNode:
 
 # #Set The MAX_depth Before Training and Inside Load Data total Rows If for testing
 # tree = DecisionTree(max_depth=3)
-# tree.fit(features, labels)
+# tree.train(features, labels)
 # predictions = tree.predict(features)
 
 # # Optionally, you can calculate accuracy or any other metric
