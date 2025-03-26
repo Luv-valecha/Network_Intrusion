@@ -1,4 +1,4 @@
-from decision_tree import DecisionTreeClassifier
+from API.model.Decision_Tree import DecisionTree
 import numpy as np
 import pandas as pd
 import random
@@ -23,7 +23,7 @@ class RandomForestClassifier:
         Y_bootstrap=[]
 
         # create bootstrap samples for every learner
-        for i in range(self.n_learners):
+        for i in range(self.n_base_learner):
 
             # if bootstrap sample size is not given by the user take it as number of rows
             if not self.bootstrap_sample_size:
@@ -40,14 +40,14 @@ class RandomForestClassifier:
     def train(self, X_train: np.array, Y_train: np.array):
         
         # create bootstrap samples
-        bootstrap_samples_X, bootstrap_samples_Y = self._create_bootstrap_samples(X_train, Y_train)
+        bootstrap_samples_X, bootstrap_samples_Y = self.create_bootstrap_samples(X_train, Y_train)
 
         # list initialization to store decision tree learners
         self.base_learner_list = []
 
         # train the base decision trees
         for base_learner_idx in range(self.n_base_learner):
-            base_learner = DecisionTreeClassifier(max_depth=self.max_depth, min_samples_leaf=self.min_samples_leaf,
+            base_learner = DecisionTree(max_depth=self.max_depth, min_samples_leaf=self.min_samples_leaf,
                                         min_information_gain=self.min_information_gain, 
                                         numb_of_features_splitting=self.numb_of_features_splitting)
             
@@ -55,7 +55,7 @@ class RandomForestClassifier:
             self.base_learner_list.append(base_learner)
 
         # Calculate feature importance
-        self.feature_importances = self._calculate_rf_feature_importance(self.base_learner_list)
+        # self.feature_importances = self.calculate_rf_feature_importance(self.base_learner_list)
 
     # function to predict decision for base learners
     def base_learners_predict(self,  X_set: np.array) -> list:
@@ -85,13 +85,23 @@ class RandomForestClassifier:
     # main predict function to give the predicted label
     def predict(self, X_set: np.array) -> np.array:
 
-        pred_probs = self.predict_proba(X_set)
+        pred_probs = self.probability_predict(X_set)
 
         # highest probability label is predicted
         preds = np.argmax(pred_probs, axis=1)
         
         return preds
 
+    # def calculate_rf_feature_importance(self, base_learners):
+    #     """Calcalates the average feature importance of the base learners"""
+    #     feature_importance_dict_list = []
+    #     for base_learner in base_learners:
+    #         feature_importance_dict_list.append(base_learner.feature_importances)
+
+    #     feature_importance_list = [list(x.values()) for x in feature_importance_dict_list]
+    #     average_feature_importance = np.mean(feature_importance_list, axis=0)
+
+    #     return average_feature_importance
 
     # function to save the model
     def save_model(self, filename):
