@@ -16,7 +16,7 @@ The preprocessing steps include:
 import pandas as pd
 from PCA import GetKbestfeatures
 import os
-
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from pandas.api.types import is_numeric_dtype
 
@@ -34,7 +34,7 @@ def encode_columns(df):
         # Store the mapping for this column
         mappings[x] = dict(zip(label_encoder.classes_, label_encoder.transform(label_encoder.classes_)))
 
-def preprocess(datapath,targetdatapath,k):
+def preprocess(datapath,targetdatapath,k,test_size = 0.2):
     """
     This function preprocesses the data and saves it to the targetdatapath
     parameters:
@@ -43,17 +43,14 @@ def preprocess(datapath,targetdatapath,k):
         k: The number of features to select (int)
     """
 
-    # datapaths
-    testpath = os.path.join(datapath,"Test_data.csv")
+    # datapath
     trainpath = os.path.join(datapath,"Train_data.csv")
 
     # Load the data
-    test_data = pd.read_csv(testpath)
     train_data = pd.read_csv(trainpath)
 
     # Encode the categorical columns
     encode_columns(train_data)
-    encode_columns(test_data)
 
     # labesl
     labels = train_data['class']
@@ -61,25 +58,26 @@ def preprocess(datapath,targetdatapath,k):
 
     # Drop the columns with more than 50% missing values
     train_data = train_data.dropna(thresh=0.5*train_data.shape[0],axis=1)
-    test_data = test_data[train_data.columns]
 
     # Drop the columns with only one unique value
     train_data = train_data.loc[:,train_data.apply(pd.Series.nunique) != 1]
-    test_data = test_data[train_data.columns]
 
     # Drop the columns with more than 90% zeros
     train_data = train_data.loc[:,(train_data==0).mean() < 0.9]
-    test_data = test_data[train_data.columns]
+
+    # split the data in train test
+    X_train, X_test, y_train, y_test = train_test_split(train_data,labels, random_state= 33,test_size = test_size,shuffle=True)
 
     # Select only the best features
-    train_data,test_data = GetKbestfeatures(train_data, labels ,test_data, k)
+    train_data,test_data = GetKbestfeatures(X_train, y_train ,X_test, k)
 
-    # Normalise the data
-    train_data = (train_data - train_data.mean())/train_data.std()
-    test_data = (test_data - test_data.mean())/test_data.std()
-
+    # Create an independent copy
+    train_data = train_data.copy()  
+    test_data = test_data.copy()
+    
     # add the labels back
-    train_data['class'] = labels
+    train_data['class'] = y_train
+    test_data["class"] = y_test
 
     # Save the processed data
     train_data.to_csv(os.path.join(targetdatapath,"train_data.csv"),index=False)
@@ -96,4 +94,4 @@ if __name__ == "__main__":
     targetdatapath = os.path.join(current_dir, "..", "data", "processed")
 
     k = 10
-    preprocess(datapath, targetdatapath, k)
+    preprocess(datapath, targetdatapath, k,test_size=0.2)
