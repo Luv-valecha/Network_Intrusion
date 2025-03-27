@@ -1,9 +1,13 @@
-import os
+import os, sys
 import pandas as pd
 import xgboost as xgb
-import json
+import pickle, json
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, classification_report
 
+
+# Add the parent directory so that the 'scripts' folder is on the path
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+from scripts.evaluate import ModelEvaluator 
 
 class XGBoostClassifier:
     def __init__(self, train_data_path: str, random_state: int = 65):
@@ -40,46 +44,15 @@ class XGBoostClassifier:
             raise ValueError("Model is not trained. Call train() before predicting.")
         return self.model.predict(X)
 
-    def evaluate(self, test_data_path: str):
-        """Evaluate model performance using a separate test dataset."""
-        if self.model is None:
-            raise ValueError("Model is not trained. Call train() before evaluation.")
-
-        if not os.path.exists(test_data_path):
-            raise FileNotFoundError(f"Test dataset not found at {test_data_path}")
-
-        df_test = pd.read_csv(test_data_path)
-        y_test = df_test['class']
-        X_test = df_test.drop(columns=['class'])
-
-        y_train_pred = self.model.predict(self.X_train)
-        y_test_pred = self.model.predict(X_test)
-
-        metrics = {
-            "Train Accuracy": accuracy_score(self.y_train, y_train_pred),
-            "Test Accuracy": accuracy_score(y_test, y_test_pred),
-            "Precision": precision_score(y_test, y_test_pred, average="weighted"),
-            "Recall": recall_score(y_test, y_test_pred, average="weighted"),
-            "F1-score": f1_score(y_test, y_test_pred, average="weighted"),
-            "Confusion Matrix": confusion_matrix(y_test, y_test_pred),
-            "Classification Report": classification_report(y_test, y_test_pred)
-        }
-
-        print("\nEvaluation Metrics:")
-        for key, value in metrics.items():
-            if isinstance(value, (float, int)):
-                print(f"{key}: {value:.4f}")
-            else:
-                print(f"{key}:\n{value}")
-
     def save_model(self, save_path: str):
         """Save the trained model to a file."""
         if self.model is None:
             raise ValueError("Model is not trained. Call train() before saving.")
 
         os.makedirs(os.path.dirname(save_path), exist_ok=True)  # Ensure the directory exists
-        self.model.save_model(save_path)
-        print(f"Model saved at: {save_path}")
+        with open(save_path,"wb") as f:
+            pickle.dump(self.model,f)
+            print(" Model saved")
 
 if __name__ == "__main__":
     # Set training dataset path
@@ -89,9 +62,10 @@ if __name__ == "__main__":
     classifier = XGBoostClassifier(train_data_path=train_dataset_path)
     classifier.train()
 
-    # Evalueate
-    classifier.evaluate(test_dataset_path)
-
     # Save the trained model
-    model_save_path = r".\saved_models\xgb_model.json"
+    model_save_path = r".\saved_models\xgb_model.pkl"
     classifier.save_model(model_save_path)
+
+    # evaluate
+    evaluater = ModelEvaluator("xgb_model.pkl")
+    evaluater.evaluate()
