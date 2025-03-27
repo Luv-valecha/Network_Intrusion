@@ -1,2 +1,7 @@
+API/__pycache__/
 API/scripts/__pycache__/
 API/model/__pycache__/
+API/data/raw/Train_data.csv
+API/data/raw/Test_data.csv
+API/data/processed/train_data.csv
+API/data/processed/test_data.csv

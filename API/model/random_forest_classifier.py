@@ -13,7 +13,7 @@ from scripts.evaluate import ModelEvaluator
 class RandomForestClassifier:
 
     # constructor
-    def __init__(self, n_learners=10, max_depth=5, min_samples_leaf=1, min_information_gain=0.0,
+    def __init__(self, n_learners=100, max_depth=15, min_samples_leaf=1, min_information_gain=0.01,
                  numb_of_features_splitting=None, bootstrap_sample_size=None):
         self.n_base_learner = n_learners
         self.max_depth = max_depth
@@ -23,7 +23,7 @@ class RandomForestClassifier:
         self.bootstrap_sample_size = bootstrap_sample_size
 
     # fucntion to create bootstrap samples for the decision trees
-    def create_bootstrap_samples(self,X,Y):
+    def _create_bootstrap_samples(self,X,Y):
         X_bootstrap=[]
         Y_bootstrap=[]
 
@@ -42,10 +42,15 @@ class RandomForestClassifier:
         return X_bootstrap, Y_bootstrap
     
     # model training
-    def train(self, X_train: np.array, Y_train: np.array):
+    def train(self, X_train, Y_train):
+
+        if not isinstance(X_train, np.ndarray):
+            X_train = np.array(X_train)
+        if not isinstance(Y_train, np.ndarray):
+            Y_train = np.array(Y_train)
         
         # create bootstrap samples
-        bootstrap_samples_X, bootstrap_samples_Y = self.create_bootstrap_samples(X_train, Y_train)
+        bootstrap_samples_X, bootstrap_samples_Y = self._create_bootstrap_samples(X_train, Y_train)
 
         # list initialization to store decision tree learners
         self.base_learner_list = []
@@ -63,7 +68,10 @@ class RandomForestClassifier:
         # self.feature_importances = self.calculate_rf_feature_importance(self.base_learner_list)
 
     # function to predict decision for base learners
-    def base_learners_predict(self,  X_set: np.array) -> list:
+    def _base_learners_predict(self,  X_set):
+
+        if not isinstance(X_set, np.ndarray):
+            X_set = np.array(X_set)
 
         pred_prob_list = []
 
@@ -74,10 +82,10 @@ class RandomForestClassifier:
         return pred_prob_list
 
     # predict function for random forest
-    def probability_predict(self, X_set: np.array) -> list:
+    def _probability_predict(self, X_set: np.array) -> list:
 
         pred_probs = []
-        base_learners_pred_probs = self.base_learners_predict(X_set)
+        base_learners_pred_probs = self._base_learners_predict(X_set)
 
         # averaging the predicted probability from each decision tree 
         for i in range(X_set.shape[0]):
@@ -88,9 +96,12 @@ class RandomForestClassifier:
         return pred_probs
 
     # main predict function to give the predicted label
-    def predict(self, X_set: np.array) -> np.array:
+    def predict(self, X_set):
 
-        pred_probs = self.probability_predict(X_set)
+        if not isinstance(X_set, np.ndarray):
+            X_set = np.array(X_set)
+
+        pred_probs = self._probability_predict(X_set)
 
         # highest probability label is predicted
         preds = np.argmax(pred_probs, axis=1)

@@ -40,7 +40,7 @@ class ModelEvaluator:
 
     def evaluate(self):
         """Evaluate the model and print metrics."""
-        print("\n🔍 Evaluating Model...")
+        print("\nEvaluating Model...")
 
         # Predictions
         y_test_pred = self.model.predict(self.X_test)
