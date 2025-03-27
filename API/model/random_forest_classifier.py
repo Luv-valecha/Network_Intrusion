@@ -1,9 +1,14 @@
-from API.model.Decision_Tree import DecisionTree
+from Decision_Tree import DecisionTree
 import numpy as np
 import pandas as pd
 import random
 import pickle
-import os
+import os, sys
+
+# Add the parent directory so that the 'scripts' folder is on the path
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+from scripts.evaluate import ModelEvaluator 
+
 
 class RandomForestClassifier:
 
@@ -126,3 +131,29 @@ class RandomForestClassifier:
         except (pickle.UnpicklingError, EOFError) as e:
             print(f"Error loading model: {e}")
             return None
+
+if __name__ == "__main__":
+    # Set training dataset path
+    train_dataset_path = r"API\data\processed\train_data.csv" 
+    test_dataset_path = r"API\data\processed\test_data.csv"
+
+    # Read the datapaths
+    train = pd.read_csv(train_dataset_path)
+    train_label = train["class"]
+    train.drop('class',inplace=True,axis=1)
+
+    test = pd.read_csv(test_dataset_path)
+    test_label = test["class"]
+    test.drop('class',inplace=True,axis=1)
+
+    # Initialize classifier with training data
+    classifier = RandomForestClassifier()
+    classifier.train(train,train_label)
+
+    # Save the trained model
+    model_save_path = r"API\model\saved_models\rf_model.pkl"
+    classifier.save_model(model_save_path)
+
+    # evaluate
+    evaluater = ModelEvaluator("rf_model.pkl")
+    evaluater.evaluate()

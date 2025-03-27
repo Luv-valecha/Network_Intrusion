@@ -1,4 +1,4 @@
-import os
+import os,sys
 import pickle
 import json
 import pandas as pd
@@ -13,9 +13,9 @@ class ModelEvaluator:
         Initialize the ModelEvaluator with the model and test dataset paths.
         """
         # form the saves models path
-        model_path = os.path.join(r"..\model\saved_models",pkl_file)
+        model_path = os.path.join(r"API\model\saved_models",pkl_file)
 
-        test_data_path = r"..\data\processed\test_data.csv"
+        test_data_path = r"API\data\processed\test_data.csv"
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model file not found at {model_path}")
         if not os.path.exists(test_data_path):
@@ -64,3 +64,11 @@ class ModelEvaluator:
             else:
                 print(f"{key}:\n{value}")
 
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <model_filename.pkl>")
+        sys.exit(1)  # Exit with an error code
+
+    model_filename = sys.argv[1]  # Get the pickle file name from command-line args
+    evaluator = ModelEvaluator(model_filename)
+    evaluator.evaluate()

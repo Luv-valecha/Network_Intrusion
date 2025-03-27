@@ -30,7 +30,7 @@ class XGBoostClassifier:
         """Train the XGBoost model."""
 
         # Load the Hyperparameters
-        with open(r".\Hyperparams\Xgboost_hparam.json", "r") as f:
+        with open(r"API\model\Hyperparams\Xgboost_hparam.json", "r") as f:
             best_params = json.load(f)
 
         num_classes = len(self.y_train.unique())
@@ -56,14 +56,14 @@ class XGBoostClassifier:
 
 if __name__ == "__main__":
     # Set training dataset path
-    train_dataset_path = r"..\data\processed\train_data.csv"
-    test_dataset_path = r"..\data\processed\test_data.csv"
+    train_dataset_path = r"API\data\processed\train_data.csv" 
+    test_dataset_path = r"API\data\processed\test_data.csv"
     # Initialize classifier with training data
     classifier = XGBoostClassifier(train_data_path=train_dataset_path)
     classifier.train()
 
     # Save the trained model
-    model_save_path = r".\saved_models\xgb_model.pkl"
+    model_save_path = r"API\model\saved_models\xgb_model.pkl"
     classifier.save_model(model_save_path)
 
     # evaluate
