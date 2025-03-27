@@ -43,7 +43,3 @@ class votingClassifier:
         if(self.vclassifier == None):
             raise ValueError("model is not initialised run create_voting_classifier()")
         return self.vclassifier.predict(x_test)
-
-# 
-
-
