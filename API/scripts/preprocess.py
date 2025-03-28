@@ -91,6 +91,8 @@ if __name__ == "__main__":
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # Define the datapath relative to the script file location
     datapath = os.path.join(current_dir, "..", "data", "raw")
+    # create the processed folder if it does not exist
+    os.makedirs(os.path.join(current_dir, "..", "data", "processed"), exist_ok=True)
     targetdatapath = os.path.join(current_dir, "..", "data", "processed")
 
     k = 10
