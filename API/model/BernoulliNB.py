@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, classification_report
-from sklearn.naive_bayes import BernoulliNB as SklearnBernoulliNB
 from sklearn.preprocessing import LabelEncoder
 
 class BernoulliNB:
