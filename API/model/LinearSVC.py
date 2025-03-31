@@ -106,7 +106,7 @@ class LinearSVM:
 
 if __name__ == "__main__":
     # Set training dataset path
-    BASE_DIR = r"C:\Users\Dhruv\Network_Intrusion-1\API\data\processed"
+    BASE_DIR = r"..\API\data\processed"
     train_path = os.path.join(BASE_DIR, "train_data.csv")
     test_path = os.path.join(BASE_DIR, "test_data.csv")
 
