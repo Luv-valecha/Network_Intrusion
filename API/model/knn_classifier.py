@@ -1,65 +1,75 @@
-import numpy as np
+import os
+import joblib
+import json
 import pandas as pd
-import sklearn
-from sklearn.metrics import pairwise_distances
+import numpy as np
 
 class KNNClassifier:
-    """
-    K-Nearest Neighbors Classifier 
-    using Manhattan distance and majority voting.
+    def __init__(self, saved_model_path: str = "model/saved_models"):
+        """Initialize the classifier and load hyperparameters."""
+        self.saved_model_path = saved_model_path
+        self.k = self.load_hyperparameters()
+        self.model_data = None
 
-    Attributes:
-        k (int): Number of neighbors to consider. Fixed at 5.
-        distance_metric (str): Distance metric to use ('manhattan').
-    """
+    def load_hyperparameters(self):
+        """Load KNN hyperparameters from JSON file."""
+        hyperparam_path = "API/model/Hyperparams/KNN_hparam.json"
+        with open(hyperparam_path, "r") as f:
+            hyperparams = json.load(f)
+        return hyperparams.get("k", 5)  # Default k=5 if not specified
 
-    # Constructor initializes fixed parameters
-    def __init__(self, k=5, distance_metric='manhattan'):
-        """
-        Initialize the KNN classifier with default k=5 and Manhattan distance.
-        """
-        self.k = k
-        self.distance_metric = distance_metric
+    def train(self, data_path: str):
+        """Load training data and store it."""
+        df = pd.read_csv(data_path)
+        self.y_train = df['class'].values
+        self.X_train = df.drop(columns=['class']).values
+        self.model_data = {"X_train": self.X_train, "y_train": self.y_train, "k": self.k}
+        
 
-    def train(self, X_train: np.array, y_train: np.array):
-        """
-        Store the training data.
+    def _compute_manhattan_distance(self, X1, X2):
+        """Compute Manhattan distance between two arrays."""
+        return np.abs(X1[:, np.newaxis] - X2).sum(axis=2)
+    
+    
+    def predict(self, X):
+        """Make predictions using KNN logic."""
+        if self.model_data is None:
+            raise ValueError("Model is not trained. Call train() before predicting.")
+    
         
-        Args:
-            X_train (np.array): Training feature matrix
-            y_train (np.array): Training labels
-        """
-        self.X_train = X_train
-        self.y_train = y_train
-
-    def predict(self, X_test: np.array):
-        """
-        Predict the labels for given test data using KNN logic.
-        
-        Steps:
-        - Compute pairwise distances between test samples and training data
-        - For each test sample, identify k-nearest neighbors
-        - Perform majority voting to determine final prediction
-        
-        Args:
-            X_test (np.array): Test feature matrix
-            
-        Returns:
-            np.array: Predicted class labels
-        """
-        # Compute distances (efficient vectorized computation)
-        distances = pairwise_distances(X_test, self.X_train, metric=self.distance_metric)
-        
+    
+        distances = self._compute_manhattan_distance(X, self.model_data["X_train"])
         predictions = []
-        # Iterate through each test point's distances
+        
         for dist_row in distances:
-            # Find indices of k nearest neighbors
             nearest_indices = np.argsort(dist_row)[:self.k]
-            nearest_labels = self.y_train[nearest_indices]
-            
-            # Majority vote among nearest neighbors
+            nearest_labels = self.model_data["y_train"][nearest_indices]
             prediction = np.bincount(nearest_labels.astype(int)).argmax()
             predictions.append(prediction)
-
+        
         return np.array(predictions)
 
+
+    def save_model(self, save_path: str = r"API/model/saved_models/knn_model.pkl"):
+          """Save the trained model (entire KNNClassifier object)."""
+          with open(save_path, "wb") as f:
+              joblib.dump(self, f)  #  Save the whole class instance
+              
+    @staticmethod
+    def load_model(model_path: str = "API/model/saved_models/knn_model.pkl"):
+        """Load the trained KNN model."""
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model file not found at {model_path}")
+        
+        with open(model_path, "rb") as f:
+            model = joblib.load(f)  #  Load full class instance
+      
+        return model        
+
+
+if __name__ == "__main__":
+    train_dataset_path = r"API\data\processed\train_data.csv"
+    
+    classifier = KNNClassifier()
+    classifier.train(train_dataset_path)
+    classifier.save_model()
