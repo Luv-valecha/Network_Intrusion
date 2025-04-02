@@ -8,10 +8,19 @@ from sklearn.ensemble import VotingClassifier
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from scripts.evaluate import ModelEvaluator 
 
+
+from BernoulliNB import BernoulliNB
+from random_forest_classifier import RandomForestClassifier
+from Decision_Tree import DecisionTree, DecisionTreeNode
+from knn_classifier import KNNClassifier
+from LinearSVC import LinearSVM
+from LogisticRegression import LogisticRegression
+from Non_LinearSVC import SVM_NonLinear
+
 class votingClassifier:
     def __init__(self,saved_model_path : str = r"API\model\saved_models"):
         self.saved_model_path = saved_model_path
-        self.models = self.load_models()
+        self.models = {}
         self.vclassifier = None
 
     def load_models(self):
@@ -23,13 +32,28 @@ class votingClassifier:
             elif file.endswith(".pkl"):
                 #print(filepath)
                 models[file.split(".")[0]] = joblib.load(filepath)
-            return models
+        return models
+    
+    def load_pretrained_model(self,model_name : str):
+        """
+        Load a pre-trained model from the specified path.
+        """
+        for file in os.listdir(self.saved_model_path):
+            filepath = os.path.join(self.saved_model_path, file)
+            if file == "voting_model.pkl":
+                self.vclassifier = joblib.load(filepath)
+                return
+        
+        raise FileNotFoundError(f"Model {model_name} not found in {self.saved_model_path}")
+                
+
     
     def create_voting_classifier(self):
+        self.models = self.load_models()
         estimators = [(name, model) for name, model in self.models.items() if hasattr(model, 'fit')]
         self.vclassifier =  VotingClassifier(estimators=estimators,voting="hard")
     
-    def train(self,data_path : str):
+    def train(self,data_path : str = r"API\data\processed\train_data.csv"):
         if(self.vclassifier == None):
             raise ValueError("model is not initialised run create_voting_classifier()")
         data = pd.read_csv(data_path)
@@ -63,7 +87,7 @@ if __name__ == "__main__":
     # Initialize classifier with training data
     classifier = votingClassifier()
     classifier.create_voting_classifier()
-    classifier.train(train_dataset_path)
+    classifier.train()
 
     # Save the trained model
     model_save_path = r"API\model\saved_models\voting_model.pkl"
