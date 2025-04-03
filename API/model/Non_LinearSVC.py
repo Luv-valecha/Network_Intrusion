@@ -7,13 +7,13 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from tqdm import tqdm
 import pickle, json
 
-# Add the parent directory so that the 'scripts' folder is on the path
+#add ModelEvaluator from evaluate.py
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from scripts.evaluate import ModelEvaluator
 
 class RBFKernelSVM:
     def __init__(self, C=1.0, gamma=1.0, tol=1e-3, max_iter=1000):
-        self.C = C  # Regularization parameter (inverse of lambda)
+        self.C = C  # Regularization parameter 
         self.gamma = gamma  # RBF kernel parameter
         self.tol = tol  # Tolerance for optimization
         self.max_iter = max_iter
@@ -52,7 +52,7 @@ class RBFKernelSVM:
         """
         Train the SVM model using a simplified SMO-like algorithm
         """
-        
+
         if not isinstance(X, np.ndarray):
             X = np.array(X)
         if not isinstance(y, np.ndarray):
@@ -85,28 +85,27 @@ class RBFKernelSVM:
             
             # Loop over all training examples
             for i in range(n_samples):
-                # Calculate error E_i = f(x_i) - y_i
+                # Calculate error Error_i = f(x_i) - y_i
                 f_xi = np.sum(self.alphas * y_binary * K[i, :]) + self.b
-                E_i = f_xi - y_binary[i]
+                Error_i = f_xi - y_binary[i]
                 
                 # Check if example violates KKT conditions
-                if ((y_binary[i] * E_i < -self.tol and self.alphas[i] < self.C) or
-                    (y_binary[i] * E_i > self.tol and self.alphas[i] > 0)):
+                if ((y_binary[i] * Error_i < -self.tol and self.alphas[i] < self.C) or
+                    (y_binary[i] * Error_i > self.tol and self.alphas[i] > 0)):
                     
-                    # Randomly select second example j ≠ i
-                    j = i
-                    while j == i:
-                        j = np.random.randint(0, n_samples)
+                    # Randomly select second example 
+                    j = np.random.randint(0, n_samples - 1)  # pick random index
+                    j += (j >= i)  # increment j if j is greater or equal to i
                     
-                    # Calculate E_j
+                    # Calculate Error_j
                     f_xj = np.sum(self.alphas * y_binary * K[j, :]) + self.b
-                    E_j = f_xj - y_binary[j]
+                    Error_j = f_xj - y_binary[j]
                     
                     # Save old alphas
                     alpha_i_old = self.alphas[i]
                     alpha_j_old = self.alphas[j]
                     
-                    # Compute bounds L and H
+                    # Compute bounds L and H every iteration
                     if y_binary[i] != y_binary[j]:
                         L = max(0, self.alphas[j] - self.alphas[i])
                         H = min(self.C, self.C + self.alphas[j] - self.alphas[i])
@@ -117,15 +116,15 @@ class RBFKernelSVM:
                     if L == H:
                         continue
                     
-                    # Compute eta = 2*K_ij - K_ii - K_jj
+                    # Compute eta = 2*K_ij - K_ii - K_jj u
                     eta = 2 * K[i, j] - K[i, i] - K[j, j]
                     
-                    # Eta should be negative so that positive-definite kernel is there
+                    # make sure Eta be negative so that positive-definite kernel is there
                     if eta >= 0:
                         continue
                     
                     # Compute new alpha_j
-                    self.alphas[j] = alpha_j_old - (y_binary[j] * (E_i - E_j)) / eta
+                    self.alphas[j] = alpha_j_old - (y_binary[j] * (Error_i - Error_j)) / eta
                     
                     # Clip alpha_j to [L, H]
                     self.alphas[j] = max(L, min(H, self.alphas[j]))
@@ -138,10 +137,10 @@ class RBFKernelSVM:
                     self.alphas[i] = alpha_i_old + y_binary[i] * y_binary[j] * (alpha_j_old - self.alphas[j])
                     
                     # Update threshold b
-                    b1 = self.b - E_i - y_binary[i] * (self.alphas[i] - alpha_i_old) * K[i, i] - \
+                    b1 = self.b - Error_i - y_binary[i] * (self.alphas[i] - alpha_i_old) * K[i, i] - \
                         y_binary[j] * (self.alphas[j] - alpha_j_old) * K[i, j]
                     
-                    b2 = self.b - E_j - y_binary[i] * (self.alphas[i] - alpha_i_old) * K[i, j] - \
+                    b2 = self.b - Error_j - y_binary[i] * (self.alphas[i] - alpha_i_old) * K[i, j] - \
                         y_binary[j] * (self.alphas[j] - alpha_j_old) * K[j, j]
                     
                     if 0 < self.alphas[i] < self.C:
@@ -153,6 +152,7 @@ class RBFKernelSVM:
                     
                     num_changed_alphas += 1
             
+            #increase the passes if num_changed_alphas is zero else make passes equal to zero
             if num_changed_alphas == 0:
                 passes += 1
             else:
@@ -171,10 +171,6 @@ class RBFKernelSVM:
         self.alphas = self.alphas[sv_idx]
         self.support_vectors = X[sv_idx]
         self.support_vector_labels = y_binary[sv_idx]
-        
-        if verbose:
-            print(f"Optimization finished after {iterations} iterations")
-            print(f"Number of support vectors: {len(sv_idx)} out of {n_samples} examples ({len(sv_idx)/n_samples*100:.2f}%)")
             
         return history
     
@@ -202,10 +198,11 @@ class RBFKernelSVM:
         """
         Calculate accuracy
         """
-        y_pred = self.predict(X)
-        return np.mean(y_pred == y)
+        predictions = self.predict(X)
+        correct_count = np.sum(predictions == y)
+        return correct_count/len(y)
     
-    # function to save the model
+    # function to save the model in pkl file
     def save_model(self, filename):
         try:
             with open(filename, 'wb') as file:
@@ -218,20 +215,26 @@ class RBFKernelSVM:
 
 # Main execution code
 if __name__ == "__main__":
+
+    #base directory for training and testing dataset
     BASE_DIR = r"API\data\processed"
     train_path = os.path.join(BASE_DIR, "train_data.csv")
     test_path = os.path.join(BASE_DIR, "test_data.csv")
+    
+    #load test and train dataset
     train_data = pd.read_csv(train_path)
     test_data = pd.read_csv(test_path)
 
     target_column = train_data.columns[-1]  
+
+    #drop target column from training and test dataset
     X_train = train_data.drop(columns=[target_column]).values
     y_train = train_data[target_column].values
 
     X_test = test_data.drop(columns=[target_column]).values
     y_test = test_data[target_column].values
 
-    max_train_samples = 5000  # Adjust based on your hardware capabilities
+    max_train_samples = 5000  #check training sample size if bigger then reduce size to reduce load on hardware
     if X_train.shape[0] > max_train_samples:
         
         # Ensure balanced sampling
@@ -258,12 +261,7 @@ if __name__ == "__main__":
         X_train_subset = X_train
         y_train_subset = y_train
 
-    rbf_svm = RBFKernelSVM(
-        C=100.0, 
-        gamma=0.001,    
-        max_iter=100, 
-        tol=1e-3      
-    )
+    rbf_svm = RBFKernelSVM(C=100.0, gamma=0.001, max_iter=100, tol=1e-3)
 
     loss_history = rbf_svm.train(X_train_subset, y_train_subset, verbose=True)
 
@@ -271,7 +269,6 @@ if __name__ == "__main__":
     model_save_path = r"API\model\saved_models\Non_LinearSVC.pkl"
     rbf_svm.save_model(model_save_path)
 
-    # evaluate
+    # evaluate model 
     evaluater = ModelEvaluator("Non_LinearSVC.pkl")
-    
     evaluater.evaluate()
