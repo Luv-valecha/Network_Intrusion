@@ -19,20 +19,24 @@ import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from pandas.api.types import is_numeric_dtype
+import joblib  # Add this import for saving the encoders
 
 def encode_columns(df):
-    cat_var = []
-    for col in df.columns:
-        if not is_numeric_dtype(df[col]):
-            cat_var.append(col)
-    
-    label_encoder = LabelEncoder()
+    cat_var = [col for col in df.columns if not is_numeric_dtype(df[col])]
     mappings = {}  # Dictionary to store mappings for each column
 
+    # Create the directory to save encoders if it doesn't exist
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    encoders_dir = os.path.join(current_dir, "..", "model", "saved_models")
+    os.makedirs(encoders_dir, exist_ok=True)
+
     for x in cat_var:
+        label_encoder = LabelEncoder()  # Create a new encoder for each column
         df[x] = label_encoder.fit_transform(df[x])
-        # Store the mapping for this column
         mappings[x] = dict(zip(label_encoder.classes_, label_encoder.transform(label_encoder.classes_)))
+        joblib.dump(label_encoder, os.path.join(encoders_dir, f"{x}_encoder.pkl"))
+
+    return df  # Ensure df is returned after transformation
 
 def preprocess(datapath,targetdatapath,k,test_size = 0.2):
     """
