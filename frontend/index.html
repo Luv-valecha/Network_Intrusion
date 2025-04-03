@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Intrusion Detection</title>
+    <link href="src/style.css" rel="stylesheet"></link>
+    <style>
+        #menu button {
+            margin: 5px; /* Add spacing between buttons */
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <button onclick="showSinglePacketUI()">Single Packet</button>
+        <button onclick="showCsvUploadUI()">CSV File</button>
+        <button onclick="showAutoCaptureUI()">Auto Capture</button>
+    </div>
+    <div class="container">
+        <h1>Network Intrusion Detection</h1>
+
+        <div id="singlePacketUI" style="display: none;">
+            <form id="predictionForm">
+                <table>
+                    <tr>
+                        <td>Service:</td>
+                        <td>
+                            <select id="service" class="dropdown">
+                                <option value="" disabled selected>Select a service</option>
+                                <option value="IRC">IRC</option>
+                                <option value="X11">X11</option>
+                                <option value="Z39_50">Z39_50</option>
+                                <option value="auth">auth</option>
+                                <option value="bgp">bgp</option>
+                                <option value="courier">courier</option>
+                                <option value="csnet_ns">csnet_ns</option>
+                                <option value="ctf">ctf</option>
+                                <option value="daytime">daytime</option>
+                                <option value="discard">discard</option>
+                                <option value="domain">domain</option>
+                                <option value="domain_u">domain_u</option>
+                                <option value="echo">echo</option>
+                                <option value="eco_i">eco_i</option>
+                                <option value="ecr_i">ecr_i</option>
+                                <option value="efs">efs</option>
+                                <option value="exec">exec</option>
+                                <option value="finger">finger</option>
+                                <option value="ftp">ftp</option>
+                                <option value="ftp_data">ftp_data</option>
+                                <option value="gopher">gopher</option>
+                                <option value="hostnames">hostnames</option>
+                                <option value="http">http</option>
+                                <option value="http_443">http_443</option>
+                                <option value="http_8001">http_8001</option>
+                                <option value="imap4">imap4</option>
+                                <option value="iso_tsap">iso_tsap</option>
+                                <option value="klogin">klogin</option>
+                                <option value="kshell">kshell</option>
+                                <option value="ldap">ldap</option>
+                                <option value="link">link</option>
+                                <option value="login">login</option>
+                                <option value="mtp">mtp</option>
+                                <option value="name">name</option>
+                                <option value="netbios_dgm">netbios_dgm</option>
+                                <option value="netbios_ns">netbios_ns</option>
+                                <option value="netbios_ssn">netbios_ssn</option>
+                                <option value="netstat">netstat</option>
+                                <option value="nnsp">nnsp</option>
+                                <option value="nntp">nntp</option>
+                                <option value="ntp_u">ntp_u</option>
+                                <option value="other">other</option>
+                                <option value="pm_dump">pm_dump</option>
+                                <option value="pop_2">pop_2</option>
+                                <option value="pop_3">pop_3</option>
+                                <option value="printer">printer</option>
+                                <option value="private">private</option>
+                                <option value="red_i">red_i</option>
+                                <option value="remote_job">remote_job</option>
+                                <option value="rje">rje</option>
+                                <option value="shell">shell</option>
+                                <option value="smtp">smtp</option>
+                                <option value="sql_net">sql_net</option>
+                                <option value="ssh">ssh</option>
+                                <option value="sunrpc">sunrpc</option>
+                                <option value="supdup">supdup</option>
+                                <option value="systat">systat</option>
+                                <option value="telnet">telnet</option>
+                                <option value="tim_i">tim_i</option>
+                                <option value="time">time</option>
+                                <option value="urh_i">urh_i</option>
+                                <option value="urp_i">urp_i</option>
+                                <option value="uucp">uucp</option>
+                                <option value="uucp_path">uucp_path</option>
+                                <option value="vmnet">vmnet</option>
+                                <option value="whois">whois</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Flag:</td>
+                        <td>
+                            <select id="flag" class="dropdown">
+                                <option value="" disabled selected>Select a flag</option>
+                                <option value="OTH">OTH</option>
+                                <option value="REJ">REJ</option>
+                                <option value="RSTO">RSTO</option>
+                                <option value="RSTOS0">RSTOS0</option>
+                                <option value="RSTR">RSTR</option>
+                                <option value="S0">S0</option>
+                                <option value="S1">S1</option>
+                                <option value="S2">S2</option>
+                                <option value="S3">S3</option>
+                                <option value="SF">SF</option>
+                                <option value="SH">SH</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Source Bytes:</td>
+                        <td><input type="number" id="src_bytes" placeholder="e.g., 123"></td>
+                    </tr>
+                    <tr>
+                        <td>Destination Bytes:</td>
+                        <td><input type="number" id="dst_bytes" placeholder="e.g., 456"></td>
+                    </tr>
+                    <tr>
+                        <td>Same Service Rate:</td>
+                        <td><input type="number" id="same_srv_rate" step="0.01" placeholder="e.g., 0.5"></td>
+                    </tr>
+                    <tr>
+                        <td>Different Service Rate:</td>
+                        <td><input type="number" id="diff_srv_rate" step="0.01" placeholder="e.g., 0.2"></td>
+                    </tr>
+                    <tr>
+                        <td>Destination Host Service Count:</td>
+                        <td><input type="number" id="dst_host_srv_count" placeholder="e.g., 255"></td>
+                    </tr>
+                    <tr>
+                        <td>Destination Host Same Service Rate:</td>
+                        <td><input type="number" id="dst_host_same_srv_rate" step="0.01" placeholder="e.g., 0.8"></td>
+                    </tr>
+                    <tr>
+                        <td>Destination Host Different Service Rate:</td>
+                        <td><input type="number" id="dst_host_diff_srv_rate" step="0.01" placeholder="e.g., 0.1"></td>
+                    </tr>
+                    <tr>
+                        <td>Destination Host Serror Rate:</td>
+                        <td><input type="number" id="dst_host_serror_rate" step="0.01" placeholder="e.g., 0.05"></td>
+                    </tr>
+                </table>
+                <button type="button" onclick="makePrediction()">Predict</button>
+            </form>
+            <div id="result" class="result" style="display: none;"></div>
+        </div>
+
+        <div id="csvUploadUI" style="display: none;">
+            <form id="csvForm">
+                <label for="csvFile">Upload CSV File:</label>
+                <input type="file" id="csvFile" accept=".csv">
+                <input type="submit"></input>
+            </form>
+            <div id="csvResult" class="result" style="display: none;"></div>
+        </div>
+
+        <div id="autoCaptureUI" style="display: none;">
+            <p>Auto capture and predict functionality is under development.</p>
+        </div>
+    </div>
+    <script src="src/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Intrusion Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table td {
+            padding: 10px;
+            vertical-align: middle;
+        }
+        table td:first-child {
+            font-weight: bold;
+            text-align: right;
+            width: 50%;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e9ffe9;
+            border: 1px solid #b2ffb2;
+            border-radius: 4px;
+            color: #2d7a2d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Network Intrusion Detection</h1>
+        <form id="predictionForm">
+            <table>
+                <tr>
+                    <td>Service:</td>
+                    <td><input type="number" id="service" placeholder="e.g., 1"></td>
+                </tr>
+                <tr>
+                    <td>Flag:</td>
+                    <td><input type="number" id="flag" placeholder="e.g., 1"></td>
+                </tr>
+                <tr>
+                    <td>Source Bytes:</td>
+                    <td><input type="number" id="src_bytes" placeholder="e.g., 123"></td>
+                </tr>
+                <tr>
+                    <td>Destination Bytes:</td>
+                    <td><input type="number" id="dst_bytes" placeholder="e.g., 456"></td>
+                </tr>
+                <tr>
+                    <td>Same Service Rate:</td>
+                    <td><input type="number" id="same_srv_rate" placeholder="e.g., 50"></td>
+                </tr>
+                <tr>
+                    <td>Different Service Rate:</td>
+                    <td><input type="number" id="diff_srv_rate" placeholder="e.g., 20"></td>
+                </tr>
+                <tr>
+                    <td>Destination Host Service Count:</td>
+                    <td><input type="number" id="dst_host_srv_count" placeholder="e.g., 255"></td>
+                </tr>
+                <tr>
+                    <td>Destination Host Same Service Rate:</td>
+                    <td><input type="number" id="dst_host_same_srv_rate" placeholder="e.g., 80"></td>
+                </tr>
+                <tr>
+                    <td>Destination Host Different Service Rate:</td>
+                    <td><input type="number" id="dst_host_diff_srv_rate" placeholder="e.g., 10"></td>
+                </tr>
+                <tr>
+                    <td>Destination Host Serror Rate:</td>
+                    <td><input type="number" id="dst_host_serror_rate" placeholder="e.g., 5"></td>
+                </tr>
+            </table>
+            <button type="button" onclick="makePrediction()">Predict</button>
+        </form>
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+    <script>
+        async function makePrediction() {
+            const data = {
+                service: parseInt(document.getElementById('service').value),
+                flag: parseInt(document.getElementById('flag').value),
+                src_bytes: parseInt(document.getElementById('src_bytes').value),
+                dst_bytes: parseInt(document.getElementById('dst_bytes').value),
+                same_srv_rate: parseInt(document.getElementById('same_srv_rate').value),
+                diff_srv_rate: parseInt(document.getElementById('diff_srv_rate').value),
+                dst_host_srv_count: parseInt(document.getElementById('dst_host_srv_count').value),
+                dst_host_same_srv_rate: parseInt(document.getElementById('dst_host_same_srv_rate').value),
+                dst_host_diff_srv_rate: parseInt(document.getElementById('dst_host_diff_srv_rate').value),
+                dst_host_serror_rate: parseInt(document.getElementById('dst_host_serror_rate').value)
+            };
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const resultDiv = document.getElementById('result');
+            if (response.ok) {
+                const result = await response.json();
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = `Prediction: ${result.prediction}`;
+            } else {
+                const error = await response.json();
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = `Error: ${error.error}`;
+            }
+        }
+    </script>
+</body>
+</html>

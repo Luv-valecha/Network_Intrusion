@@ -1,0 +1,140 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212; /* Dark gray background */
+    color: #e0e0e0; /* Light gray text */
+    margin: 0;
+    padding: 0;
+}
+.container {
+    max-width: 700px; /* Increase width to fit content */
+    max-height: 800px; /* Increase height to fit content */
+    margin: 10px auto;
+    background: rgba(30, 30, 30, 0.6); /* Semi-transparent background */
+    backdrop-filter: blur(15px); /* Blur effect for glass morphism */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for glass effect */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle black shadow */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Center content vertically */
+}
+.container.hidden {
+    height: 100vh; /* Full width when all UIs are hidden */
+}
+h1 {
+    text-align: center;
+    color: #ff6f61; /* Softer orange text */
+    margin: 0; /* Remove default margin */
+    display: inline-block; /* Adjust background size to fit text */
+    padding: 10px 20px; /* Add padding around the text */
+    background-color: rgba(30, 30, 30, 0.8); /* Semi-transparent background */
+    border-radius: 8px; /* Rounded corners */
+    background: rgba(30, 30, 30, 0.6); /* Semi-transparent background */
+    backdrop-filter: blur(10px); /* Blur effect for glass morphism */
+    border: none; /* Remove border for the title box */
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+table td {
+    padding: 10px;
+    vertical-align: middle;
+}
+table td:first-child {
+    font-weight: bold;
+    text-align: right;
+    width: 50%;
+    color: #64b5f6; /* Softer blue text */
+}
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #4caf50; /* Green border */
+    border-radius: 6px;
+    background-color: #2c2c2c; /* Dark gray input background */
+    color: #a5d6a7; /* Softer green text */
+}
+input::placeholder {
+    color: #bdbdbd; /* Softer gray placeholder text */
+}
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #424242; /* Dark gray button background */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+button:hover {
+    background-color: #616161; /* Slightly lighter hover effect */
+}
+.result {
+    margin-top: 20px;
+    padding: 15px;
+    /* background: #1b5e20; Softer dark green background */
+    border: 1px solid #2e7d32; /* Softer green border */
+    border-radius: 6px;
+    color: #c8e6c9; /* Softer light green text */
+    font-weight: bold;
+    text-align: center; /* Center the output text */
+}
+.dropdown {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #4caf50; /* Green border */
+    border-radius: 6px;
+    background-color: #2c2c2c; /* Dark gray background */
+    color: #a5d6a7; /* Softer green text */
+    margin-bottom: 10px; /* Add spacing below dropdowns */
+}
+.dropdown option {
+    background-color: #2c2c2c; /* Dark gray background for options */
+    color: #a5d6a7; /* Softer green text for options */
+}
+.navbar {
+    display: flex;
+    justify-content: space-around; /* Adjust spacing between buttons */
+    background: rgba(30, 30, 30, 0.6); /* More transparent dark background */
+    backdrop-filter: blur(15px); /* Stronger blur effect for glass look */
+    padding: 20px; /* Increase padding for a larger navbar */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); /* More pronounced shadow */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-radius: 12px; /* Add rounded corners */
+}
+.navbar button {
+    margin: 0 10px;
+    padding: 10px 16px; /* Increase button size */
+    background-color: rgba(66, 66, 66, 0.8); /* Semi-transparent button background */
+    color: white;
+    border: none;
+    border-radius: 8px; /* Slightly more rounded corners */
+    font-size: 16px; /* Larger font size */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 220px; /* Slightly wider buttons */
+}
+.navbar button:hover {
+    background-color: rgba(97, 97, 97, 0.8); /* Slightly lighter hover effect */
+    transform: scale(1.05); /* Add a slight zoom effect on hover */
+}
+
+#csvForm input[type="file"] {
+    margin-bottom: 10px; /* Add spacing below the file input */
+    width: 96%; /* Reduce the width of the input box */
+}
+
+#singlePacketUI {
+    width: 100%; /* Ensure it takes full width of the container */
+    padding: 10px; /* Add padding for better spacing */
+    box-sizing: border-box; /* Include padding in width/height calculations */
+}
