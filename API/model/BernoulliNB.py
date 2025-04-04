@@ -2,10 +2,17 @@ import os
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
+import sys
+import pickle, json
+
+
+#adding ModelEvaluator from evaluate.py
+sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+from scripts.evaluate import ModelEvaluator
 
 class BernoulliNB:
     def __init__(self, alpha=1.0):
-        #Initialize Bernoulli Naive Bayes classifier with Laplace smoothing.
+        #initialize Bernoulli Naive Bayes classifier (with Laplace smoothing.)
         self.alpha = alpha
         self.classes_ = None
         self.class_priors_ = None
@@ -30,32 +37,32 @@ class BernoulliNB:
         self.n_features_ = X.shape[1]
         n_samples = X.shape[0]
         
-        # Calculate class priors (probability of each class)
+        # calculating class prior probabilities
         self.class_priors_ = class_counts / n_samples
         
-        # Initialize feature probability matrices
+        # Initializing feature probability matrices
         self.feature_prob_ = np.zeros((self.n_classes_, self.n_features_))
         
-        # Calculate feature probabilities for each class
+        # calculating feature probabilities for each class
         for i, c in enumerate(self.classes_):
             X_c = X[y == c]  
             n_c = X_c.shape[0]  
             
-            # Count occurrences of feature=1 for each feature in class c
+            # counting occurrences of feature=1 for each feature in class c
             feature_counts = np.sum(X_c, axis=0)
             
-            # Calculate probabilities with Laplace smoothing
+            # calculating probabilities along with Laplace smoothing
             self.feature_prob_[i] = (feature_counts + self.alpha) / (n_c + 2 * self.alpha)
             
         return self
     
     def predict_proba(self, X):
-        #Return probability estimates for samples in X.
+        #function for returning probability estimates for samples in X.
 
         if isinstance(X, pd.DataFrame):
             X = X.values
             
-        # Initialize the log probability matrix
+        # intializing log probability matrix
         log_proba = np.zeros((X.shape[0], self.n_classes_))
         
         # Calculate log probability for each class
@@ -63,7 +70,7 @@ class BernoulliNB:
             # Prior probability of the class (in log space)
             class_prior = np.log(self.class_priors_[i])
             
-            # Calculate Bernoulli probability for features
+            # Bernoulli probability for features
             # P(x|c) = P(x=1|c)^x * (1-P(x=1|c))^(1-x) for each feature x
             # In log space: log(P(x|c)) = x*log(P(x=1|c)) + (1-x)*log(1-P(x=1|c))
             feature_probs_c = self.feature_prob_[i]
@@ -74,7 +81,7 @@ class BernoulliNB:
             # For x=0: log(1-P(x=1|c))
             term_0 = (1 - X) * np.log(1 - feature_probs_c)
             
-            # Sum log probabilities over all features and add class prior
+            # summation of log probabilities over all features and add class prior
             log_proba[:, i] = class_prior + np.sum(term_1 + term_0, axis=1)
         
         log_proba_exp = log_proba - np.max(log_proba, axis=1, keepdims=True)
@@ -97,18 +104,26 @@ class BernoulliNB:
             
         y_pred = self.predict(X)
         return np.mean(y_pred == y)
+    # function to save the model in pkl file
+    def save_model(self, filename):
+        try:
+            with open(filename, 'wb') as file:
+                pickle.dump(self, file)
+            print(f"Model saved to {filename}")
+        except (OSError, IOError) as e:
+            print(f"Error saving model: {e}")
 
-
+#main function execution code
 if __name__ == "__main__":
-    BASE_DIR = r"C:\Users\Pratyush\OneDrive\Desktop\ChampSim-master\Network_Intrusion\API\data\processed"
+    BASE_DIR = r"API\data\processed"
     train_path = os.path.join(BASE_DIR, "train_data.csv")
     test_path = os.path.join(BASE_DIR, "test_data.csv")
     
-    # Load the data
+    # Loading the data
     train_data = pd.read_csv(train_path)
     test_data = pd.read_csv(test_path)
     
-    # Separate features and target using the approach you provided
+    # Separate features and target
     target_column = train_data.columns[-1]
     
     X_train = train_data.drop(columns=[target_column]).values
@@ -133,4 +148,12 @@ if __name__ == "__main__":
     # Create and train the BernoulliNB model
     bnb = BernoulliNB(alpha=1.0)
     bnb.fit(X_train_binary, y_train)
+
+    # saving the trained model
+    model_save_path = r"API\model\saved_models\BernoulliNB.pkl"
+    bnb.save_model(model_save_path)
+
+    # evaluate model 
+    evaluater = ModelEvaluator("BernoulliNB.pkl")
+    evaluater.evaluate()
     
