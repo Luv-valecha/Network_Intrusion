@@ -48,6 +48,7 @@ def predict():
         # Make prediction
         prediction = model.predict(features)
         response = {'prediction': prediction.tolist()}
+        print(f"Prediction result: {response}")  # Debugging statement
         return jsonify(response), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400
@@ -115,4 +116,4 @@ def predict_csv():
         return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
