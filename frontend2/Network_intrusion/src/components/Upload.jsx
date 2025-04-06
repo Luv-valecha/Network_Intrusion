@@ -26,7 +26,7 @@ const Upload = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://35.223.135.16:5000/predict_csv', {
+      const response = await fetch('/predict_csv', {
         method: 'POST',
         body: formData
       });
