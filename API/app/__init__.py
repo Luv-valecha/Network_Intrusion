@@ -11,14 +11,14 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS
 
 # Load the VotingClassifier model
-with open(r'd:\Save Files\Visual Studio\Network_intrusion\API\model\saved_models\voting_model.pkl', 'rb') as model_file:
+with open(r'API\model\saved_models\voting_model.pkl', 'rb') as model_file:
     model = joblib.load(model_file)  # Use joblib.load
 
 # Load the encoders for 'service' and 'flag'
-with open(r'd:\Save Files\Visual Studio\Network_intrusion\API\model\saved_models\service_encoder.pkl', 'rb') as service_encoder_file:
+with open(r'API\model\saved_models\service_encoder.pkl', 'rb') as service_encoder_file:
     service_encoder = joblib.load(service_encoder_file)  # Use joblib.load
 
-with open(r'd:\Save Files\Visual Studio\Network_intrusion\API\model\saved_models\flag_encoder.pkl', 'rb') as flag_encoder_file:
+with open(r'API\model\saved_models\flag_encoder.pkl', 'rb') as flag_encoder_file:
     flag_encoder = joblib.load(flag_encoder_file)  # Use joblib.load
 
 @app.route('/')
