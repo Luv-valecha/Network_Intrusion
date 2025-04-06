@@ -9,7 +9,11 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/predict': 'http://35.223.135.16:5000'
+      '/predict': {
+        target: 'http://35.223.135.16:5000',
+        changeOrigin: true,
+        secure: false,
+      }
     }
   }
 })
