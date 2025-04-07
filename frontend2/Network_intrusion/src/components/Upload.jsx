@@ -26,7 +26,7 @@ const Upload = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('/predict_csv', {
+      const response = await fetch('https://network-intrusion-backend.onrender.com/predict_csv', {
         method: 'POST',
         body: formData
       });
