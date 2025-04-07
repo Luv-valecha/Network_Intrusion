@@ -12,8 +12,7 @@ function App() {
         <Sidebar />
         <div className="flex-1 overflow-y-auto">
           <Routes>
-            <Route path="/" element={<Navigate to="/packet" replace />} />
-            <Route path="/packet" element={<PacketForm />} />
+            <Route path="/" element={<PacketForm />} />
             <Route path="/upload" element={<Upload />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/about" element={<About />} />

@@ -8,7 +8,11 @@ from werkzeug.utils import secure_filename  # Import for file handling
 
 # Ensure Flask serves only API endpoints
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
+CORS(app, resources={r"/*": {"origins": [
+    "http://localhost:5173",  # for local dev
+    "https://network-intrusion.onrender.com"  # your deployed frontend
+]}})
+
  # Enable CORS
 
 # Load the VotingClassifier model
