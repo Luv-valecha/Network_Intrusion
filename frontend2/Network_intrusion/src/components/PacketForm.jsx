@@ -37,7 +37,7 @@ const PacketForm = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch('https://network-intrusion-backend.onrender.com/predict', {
+      const response = await fetch('https://net-intrusion-358654395984.asia-south1.run.app/predict', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
