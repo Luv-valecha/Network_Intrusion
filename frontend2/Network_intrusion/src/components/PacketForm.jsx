@@ -22,8 +22,8 @@ const PacketForm = () => {
     return stored ? JSON.parse(stored) : [];
   });
 
-  
-  const [loading, setLoading] = useState(false);  
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('packetHistory', JSON.stringify(history));
@@ -36,12 +36,15 @@ const PacketForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setSubmitted(false);
+
     try {
       const response = await fetch('https://net-intrusion-358654395984.asia-south1.run.app/predict', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
+
       const data = await response.json();
       const prediction = data.prediction[0];
       setResult(prediction);
@@ -50,9 +53,23 @@ const PacketForm = () => {
         id: Date.now(),
         prediction,
         timestamp: new Date().toLocaleString(),
-        input: { ...formData } // Save the whole form input
-      };      
+        input: { ...formData }
+      };
+
       setHistory(prev => [newEntry, ...prev]);
+      setSubmitted(true);
+      setFormData({
+        service: '',
+        flag: '',
+        src_bytes: '',
+        dst_bytes: '',
+        same_srv_rate: '',
+        diff_srv_rate: '',
+        dst_host_srv_count: '',
+        dst_host_same_srv_rate: '',
+        dst_host_diff_srv_rate: '',
+        dst_host_serror_rate: ''
+      });
     } catch (err) {
       console.error('Prediction error:', err);
     } finally {
@@ -85,10 +102,10 @@ const PacketForm = () => {
         {/* Left Column - Form */}
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 max-w-xl flex-1 bg-gray-900 p-6 rounded-lg shadow-lg"
+          className="space-y-6 max-w-xl flex-1 bg-gray-900 p-6 rounded-lg shadow-lg"
         >
           <div>
-            <label className="block mb-1">Service:</label>
+            <label className="block mb-1 font-semibold">Service</label>
             <select
               name="service"
               value={formData.service}
@@ -97,14 +114,14 @@ const PacketForm = () => {
               required
             >
               <option value="" disabled>Select a service</option>
-              {serviceOptions.map((service) => (
+              {serviceOptions.map(service => (
                 <option key={service} value={service}>{service}</option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className="block mb-1">Flag:</label>
+            <label className="block mb-1 font-semibold">Flag</label>
             <select
               name="flag"
               value={formData.flag}
@@ -113,40 +130,44 @@ const PacketForm = () => {
               required
             >
               <option value="" disabled>Select a flag</option>
-              {flagOptions.map((flag) => (
+              {flagOptions.map(flag => (
                 <option key={flag} value={flag}>{flag}</option>
               ))}
             </select>
           </div>
 
-          {[
-            { label: 'Source Bytes', name: 'src_bytes' },
-            { label: 'Destination Bytes', name: 'dst_bytes' },
-            { label: 'Same Service Rate', name: 'same_srv_rate', step: '0.01' },
-            { label: 'Different Service Rate', name: 'diff_srv_rate', step: '0.01' },
-            { label: 'Destination Host Service Count', name: 'dst_host_srv_count' },
-            { label: 'Destination Host Same Service Rate', name: 'dst_host_same_srv_rate', step: '0.01' },
-            { label: 'Destination Host Different Service Rate', name: 'dst_host_diff_srv_rate', step: '0.01' },
-            { label: 'Destination Host Serror Rate', name: 'dst_host_serror_rate', step: '0.01' }
-          ].map(({ label, name, step }) => (
-            <div key={name}>
-              <label className="block mb-1">{label}:</label>
-              <input
-                type="number"
-                step={step || '1'}
-                name={name}
-                value={formData[name]}
-                onChange={handleChange}
-                placeholder={`e.g. ${step ? '0.01' : '123'}`}
-                className="w-full bg-gray-800 p-2 rounded"
-                required
-              />
-            </div>
-          ))}
+          <hr className="border-gray-700" />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {[
+              { label: 'Source Bytes', name: 'src_bytes' },
+              { label: 'Destination Bytes', name: 'dst_bytes' },
+              { label: 'Same Service Rate', name: 'same_srv_rate', step: '0.01' },
+              { label: 'Different Service Rate', name: 'diff_srv_rate', step: '0.01' },
+              { label: 'Dst Host Service Count', name: 'dst_host_srv_count' },
+              { label: 'Dst Host Same Service Rate', name: 'dst_host_same_srv_rate', step: '0.01' },
+              { label: 'Dst Host Diff Service Rate', name: 'dst_host_diff_srv_rate', step: '0.01' },
+              { label: 'Dst Host Serror Rate', name: 'dst_host_serror_rate', step: '0.01' }
+            ].map(({ label, name, step }) => (
+              <div key={name}>
+                <label className="block mb-1 font-semibold">{label}</label>
+                <input
+                  type="number"
+                  step={step || '1'}
+                  name={name}
+                  value={formData[name]}
+                  onChange={handleChange}
+                  placeholder={step ? '0.00' : 'e.g. 123'}
+                  className="w-full bg-gray-800 p-2 rounded"
+                  required
+                />
+              </div>
+            ))}
+          </div>
 
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded w-full"
+            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded w-full font-semibold"
             disabled={loading}
           >
             {loading ? 'Predicting...' : 'Predict'}

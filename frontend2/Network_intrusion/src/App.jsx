@@ -4,6 +4,7 @@ import PacketForm from './components/PacketForm';
 import Upload from './components/Upload';
 import HistoryPage from './components/HistoryPage';
 import About from './components/About';
+import AutoCapture from './components/AutoCapture';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Routes>
             <Route path="/" element={<PacketForm />} />
             <Route path="/upload" element={<Upload />} />
+            <Route path="/autocapture" element={<AutoCapture />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/about" element={<About />} />
           </Routes>
