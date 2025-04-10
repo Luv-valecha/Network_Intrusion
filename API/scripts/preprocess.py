@@ -6,7 +6,6 @@ The preprocessing steps include:
 2. Drop the columns with more than 50% missing values
 3. Drop the columns with only one unique value
 4. Drop the columns with more than 90% zeros
-5. Normalise the data
 6. Select only top k features using mutual information
 7. Save the processed data to the data folder "../API/data/processed"
 
