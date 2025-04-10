@@ -13,9 +13,9 @@ class ModelEvaluator:
         Initialize the ModelEvaluator with the model and test dataset paths.
         """
         # form the saves models path
-        model_path = os.path.join(r"API\model\saved_models",pkl_file)
+        model_path = os.path.join(r"..\model\saved_models",pkl_file)
 
-        test_data_path = r"API\data\processed\test_data.csv"
+        test_data_path = r"..\data\processed\test_data.csv"
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model file not found at {model_path}")
         if not os.path.exists(test_data_path):
