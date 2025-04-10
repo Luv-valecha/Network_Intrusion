@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 function About() {
   return (
@@ -30,6 +31,30 @@ function About() {
         </ul>
       </section>
 
+      <section className="mb-16">
+        <h2 className="text-3xl font-semibold text-white mb-6">Website Features</h2>
+        <ul className="list-disc pl-5 text-white space-y-3">
+          <li>
+            <NavLink to="/" className="hover:underline" title="Single Packet">
+              Single Packet Detection:
+            </NavLink>{' '}
+            Allows the user to manually input network packet details and classify them.
+          </li>
+          <li>
+            <NavLink to="/upload" className="hover:underline" title="Single Packet">
+              CSV File Detection:
+            </NavLink>{' '}
+            Users can upload a CSV file containing multiple network packets for batch classification.
+          </li>
+          <li>
+            <NavLink to="/autocapture" className="hover:underline" title="Single Packet">
+              Auto Packet Capturing:
+            </NavLink>{' '}
+            Enables real-time classification of incoming network packets. Users must set up a local packet sniffing server—setup instructions are provided in that section.
+          </li>
+        </ul>
+      </section>
+
       {/* Algorithms Used Section */}
       <section className="mb-16">
         <h2 className="text-3xl font-semibold text-white mb-6">Algorithms Used</h2>
@@ -41,6 +66,7 @@ function About() {
           <li>Support Vector Machines (SVM)</li>
           <li>AdaBoost</li>
           <li>XGBoost</li>
+          <li>ANN</li>
         </ul>
       </section>
 
@@ -48,124 +74,82 @@ function About() {
       <section className="bg-gray-800 p-8 rounded-lg shadow-md mb-16">
         <h2 className="text-3xl font-semibold text-white mb-6">Deployment on Google Cloud</h2>
         <p className="text-lg text-white">
-          Our system is deployed on Google Cloud, ensuring scalability, security, and high availability. The cloud infrastructure allows for seamless scaling to handle varying levels of network traffic, while providing real-time threat detection.
+          Our system's backend API is deployed on Google Cloud, ensuring scalability, security, and high availability. The cloud infrastructure allows for seamless scaling to handle varying levels of network traffic, while providing real-time threat detection.
         </p>
       </section>
 
       <section className="bg-gray-800 p-8 rounded-lg shadow-md mb-16">
-  <h2 className="text-3xl font-semibold text-white mb-6 text-center">Mentor</h2>
-  
-  <div className="flex justify-center items-center">
-    <div className="flex items-center">
-      <img
-        className="w-38 h-38 rounded-full mr-6"
-        src="https://th.bing.com/th/id/R.51068bb63aa31b9f0ab82115c4eb62db?rik=TJLQHyDxSTy4IQ&riu=http%3a%2f%2fiitj.ac.in%2fdept_faculty_pic%2fmishra.jpg&ehk=woMXDzoGb8FMiFzQliojL5aELFWvU7BI7f8T7ADciWQ%3d&risl=&pid=ImgRaw&r=0"
-        alt="Prof. Anand Mishra"
-      />
-      <div>
-        <h3 className="text-xl font-semibold text-white mb-2">Prof. Anand Mishra</h3>
-        <h3 className="text-xl font-semibold text-white mb-2">Assistant Professor , I.I.T.Jodhpur </h3>
-        <p className="text-white">
-          
-        </p>
-      </div>
-    </div>
-  </div>
+        <h2 className="text-3xl font-semibold text-white mb-6 text-center">Mentor</h2>
 
-  {/* New Block for Mentor Details (Below the Picture) */}
-  <div className="mt-6 p-4 rounded-lg">
-    {/* <h4 className="text-xl font-semibold text-white mb-2">Details</h4> */}
-    {/* <p className="text-white"> at the Department of Computer Science and Engineering at the Indian Institute of Technology Jodhpur.</p> */}
-  </div>
-</section>
+        <div className="flex justify-center items-center">
+          <div className="flex items-center">
+            <img
+              className="w-38 h-38 rounded-full mr-6"
+              src="https://th.bing.com/th/id/R.51068bb63aa31b9f0ab82115c4eb62db?rik=TJLQHyDxSTy4IQ&riu=http%3a%2f%2fiitj.ac.in%2fdept_faculty_pic%2fmishra.jpg&ehk=woMXDzoGb8FMiFzQliojL5aELFWvU7BI7f8T7ADciWQ%3d&risl=&pid=ImgRaw&r=0"
+              alt="Prof. Anand Mishra"
+            />
+            <div>
+              <h3 className="text-xl font-semibold text-white mb-2">Prof. Anand Mishra</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">Assistant Professor , IIT Jodhpur </h3>
+              <p className="text-white">
+                We would like to express our heartfelt gratitude to Prof. Anand Mishra, Assistant Professor at IIT Jodhpur, for his invaluable guidance and mentorship throughout the development of this project. His insights, encouragement, and support were instrumental in shaping our approach and helping us overcome challenges along the way. This project would not have reached its current level of depth and quality without his expert supervision. We are truly thankful for the opportunity to learn under his mentorship.
+              </p>
+            </div>
+          </div>
+        </div>
 
-      {/* Meet the Team Section (3 Members per Row) */}
+        {/* New Block for Mentor Details (Below the Picture) */}
+        <div className="mt-6 p-4 rounded-lg">
+          {/* <h4 className="text-xl font-semibold text-white mb-2">Details</h4> */}
+          {/* <p className="text-white"> at the Department of Computer Science and Engineering at the Indian Institute of Technology Jodhpur.</p> */}
+        </div>
+      </section>
+
+      {/* Meet the Team Section */}
+      {/* Meet the Team Section */}
       <section className="mb-16">
-  <h2 className="text-3xl font-semibold text-white mb-6">Meet the Team</h2>
+        <h2 className="text-3xl font-semibold text-white mb-6 text-center">Meet the Team</h2>
 
-  <div className="flex flex-wrap justify-between">
-    {/* Team Member 1 */}
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md w-full sm:w-1/2 lg:w-1/3 mb-6">
-      <img
-        className="w-24 h-24 rounded-full mx-auto mb-4"
-        src="https://th.bing.com/th/id/OIP.-mDSgRGbUyo9jUJKbWI3nAAAAA?rs=1&pid=ImgDetMain"
-        alt="Luv Valecha"
-      />
-      <div className="text-center">
-        <h3 className="text-xl font-semibold text-white mb-2">Luv Valecha</h3>
-        <p className="text-white">Student ID: B23CS1093</p>
-      </div>
-    </div>
+        <div className="flex flex-wrap justify-center gap-6">
+          {[
+            { name: "Luv Valecha", id: "B23CS1093", linkedin: "#", github: "#" },
+            { name: "Shiv Jee Yadav", id: "B23EE1095", linkedin: "#", github: "#" },
+            { name: "Ritik Nagar", id: "B23EE1061", linkedin: "#", github: "#" },
+            { name: "Pratyush Chauhan", id: "B23CM1030", linkedin: "#", github: "#" },
+            { name: "Dheeraj Kumar", id: "B23CS1016", linkedin: "#", github: "#" },
+            { name: "Dhruv Sharma", id: "B23EE1086", linkedin: "#", github: "#" }
+          ].map((member, index) => (
+            <div
+              key={index}
+              className="bg-gray-800 p-6 rounded-lg shadow-md w-full sm:w-1/2 lg:w-1/3 text-center"
+            >
+              <h3 className="text-xl font-semibold text-white">{member.name}</h3>
+              <p className="text-white mb-4">{member.id}</p>
+              <div className="flex justify-center gap-6">
+                <a
+                  href={member.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-blue-400 text-2xl"
+                  title="LinkedIn"
+                >
+                  <i className="fab fa-linkedin"></i>
+                </a>
+                <a
+                  href={member.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white hover:text-gray-400 text-2xl"
+                  title="GitHub"
+                >
+                  <i className="fab fa-github"></i>
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
-    {/* Team Member 2 */}
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md w-full sm:w-1/2 lg:w-1/3 mb-6">
-      <img
-        className="w-24 h-24 rounded-full mx-auto mb-4"
-        src="https://th.bing.com/th/id/OIP.-mDSgRGbUyo9jUJKbWI3nAAAAA?rs=1&pid=ImgDetMain"
-        alt="Shiv Jee Yadav"
-      />
-      <div className="text-center">
-        <h3 className="text-xl font-semibold text-white mb-2">Shiv Jee Yadav</h3>
-        <p className="text-white">Student ID: B23EE1095</p>
-      </div>
-    </div>
-
-    {/* Team Member 3 */}
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md w-full sm:w-1/2 lg:w-1/3 mb-6">
-      <img
-        className="w-24 h-24 rounded-full mx-auto mb-4"
-        src="https://th.bing.com/th/id/OIP.-mDSgRGbUyo9jUJKbWI3nAAAAA?rs=1&pid=ImgDetMain"
-        alt="Ritik Nagar"
-      />
-      <div className="text-center">
-        <h3 className="text-xl font-semibold text-white mb-2">Ritik Nagar</h3>
-        <p className="text-white">Student ID: B23EE1061</p>
-      </div>
-    </div>
-
-    {/* Team Member 4 */}
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md w-full sm:w-1/2 lg:w-1/3 mb-6">
-      <img
-        className="w-24 h-24 rounded-full mx-auto mb-4"
-        src="https://th.bing.com/th/id/OIP.-mDSgRGbUyo9jUJKbWI3nAAAAA?rs=1&pid=ImgDetMain"
-        alt="Pratyush Chauhan"
-      />
-      <div className="text-center">
-        <h3 className="text-xl font-semibold text-white mb-2">Pratyush Chauhan</h3>
-        <p className="text-white">Student ID: B23CM1030</p>
-      </div>
-    </div>
-
-    {/* Team Member 5 */}
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md w-full sm:w-1/2 lg:w-1/3 mb-6">
-      <img
-        className="w-24 h-24 rounded-full mx-auto mb-4"
-        src="https://th.bing.com/th/id/OIP.-mDSgRGbUyo9jUJKbWI3nAAAAA?rs=1&pid=ImgDetMain"
-        alt="Dheeraj Kumar"
-      />
-      <div className="text-center">
-        <h3 className="text-xl font-semibold text-white mb-2">Dheeraj Kumar</h3>
-        <p className="text-white">Student ID: B23CS1016</p>
-      </div>
-    </div>
-
-    {/* Team Member 6 */}
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md w-full sm:w-1/2 lg:w-1/3 mb-6">
-      <img
-        className="w-24 h-24 rounded-full mx-auto mb-4"
-        src="https://th.bing.com/th/id/OIP.-mDSgRGbUyo9jUJKbWI3nAAAAA?rs=1&pid=ImgDetMain"
-        alt="Dhruv Sharma"
-      />
-      <div className="text-center">
-        <h3 className="text-xl font-semibold text-white mb-2">Dhruv Sharma</h3>
-        <p className="text-white">Student ID: B23EE1086</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-      {/* Mentor Information Section */}
-     
 
       {/* Footer Section */}
       <footer className="text-center py-6 bg-gray-800 text-white">
