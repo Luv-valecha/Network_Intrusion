@@ -1,90 +1,206 @@
-# 🌐 **Network Intrusion Detection**
+# 🛡️ Network Intrusion Detection System (NIDS) using Machine Learning
 
-The **Network Intrusion Detection System (NIDS)** is designed to identify unauthorized access or anomalies within a network. By leveraging machine learning algorithms, this system analyzes network traffic to detect potential threats and intrusions effectively.
-
----
-
-## ✨ **Features**
-
-- 🤖 **Machine Learning Models**: Utilizes advanced algorithms for accurate anomaly detection.
-- 🖥️ **User-friendly Interface**: Provides a frontend for easy interaction and visualization of detected threats.
+A machine learning-based project focused on detecting network intrusions using classical models and ensemble learning techniques. The system processes network traffic data, classifies it into normal or anomaly classes, and provides a real-time web interface for prediction and live packet capture.
 
 ---
 
-## ⚙️ **Installation**
+## 📂 Table of Contents
 
-1. **Clone the Repository**:  
-   ```bash
-   git clone https://github.com/Luv-valecha/Network_Intrusion.git
-   ```
-
-2. **Navigate to the Project Directory**:  
-   ```bash
-   cd Network_Intrusion
-   ```
-
-3. **Install Required Dependencies**:  
-   Ensure that all necessary Python packages are installed by running:  
-   ```bash
-   pip install -r requirements.txt
-   ```
+- [Overview](#overview)
+- [Dataset](#dataset)
+- [Tech Stack](#tech-stack)
+- [Data Preprocessing](#data-preprocessing)
+- [Models Implemented](#models-implemented)
+- [Evaluation Metrics](#evaluation-metrics)
+- [Frontend Features](#frontend-features)
+- [Live Packet Capture](#live-packet-capture)
+- [Results](#results)
+- [How to Run](#how-to-run)
+- [Future Scope](#future-scope)
+- [Contributors](#contributors)
+- [Contact and Feedback](#contact-&-feedback)
 
 ---
 
-## 🚀 **Usage**
+## 📌 Overview
 
-Follow these steps to set up and run the **Network Intrusion Detection System**:
-
-1. **Data Preparation**:  
-   - Extract Data Files:  
-     On Windows, execute the following command in the Command Prompt to extract the dataset:  
-     ```bash
-     Expand-Archive -Path ".\API\data\raw\archive.zip" -DestinationPath ".\API\data\raw"
-     ```
-
-2. **Preprocess the Data**:  
-   Run the preprocessing script to clean and prepare the data for analysis:  
-   ```bash
-   python preprocess.py
-   ```
-
-3. **Run the Server**:  
-   ```bash
-   python run.py
-   ```
-
-4. **Launch the Frontend Application**:  
-   Navigate to the frontend directory and start the application to visualize and interact with the system:  
-   ```bash
-   cd frontend
-   # then run the index.html
-   ```
+This project presents a scalable, real-time **Network Intrusion Detection System (NIDS)** using a blend of machine learning models. We evaluated a wide range of classifiers to detect anomalies in network traffic. Additionally, we developed a web-based frontend to interact with the system, making it accessible and intuitive for end users.
 
 ---
 
-## 🤝 **Contributing**
+## 📊 Dataset
 
-Contributions are always welcome!  
-
-1. Fork the repository.  
-2. Create a branch and start working.  
-3. Once you finish, create a pull request.  
-
----
-
-## 👨‍💻 **Authors**
-
-- [Dheeraj Kumar](https://www.github.com/dheeraj-6904)  
-- [Luv Valecha](https://github.com/Luv-valecha)  
-- [Shiv Jee Yadav](https://github.com/ShivJee-Yadav)  
-- [Dhruv Sharma](https://github.com/Dhruv0427)  
-- [Ritik Nagar](https://github.com/ritiknagar9521)  
-- [Pratyush (Pransu) Chauhan](https://github.com/pratyushc07)
+- **Name**: [Network Intrusion Dataset](https://www.kaggle.com/datasets/sampadab17/network-intrusion-detection/data)
+- **Size**: ~25,000 rows × 42 columns
+- **Class Distribution**:
+  - `Normal`: 13,449
+  - `Anomaly`: 11,743
+  - **Ratio**: 1.15:1 (balanced)
 
 ---
 
-## 📜 **License**
+## ⚙️ Tech Stack
 
-This project is licensed under the [MIT License](https://choosealicense.com/licenses/mit/).  
-You are free to use, modify, and distribute this software in accordance with the terms of this license.
+### 🔍 Backend & ML
+- Python
+- Scikit-learn
+- XGBoost
+- Optuna
+- Pandas, NumPy
+- Matplotlib / Seaborn (for visualization)
+
+### 💻 Frontend
+- React.js
+- RESTful APIs
+- Vercel Deployment
+
+---
+
+## 🧹 Data Preprocessing
+
+- Label encoding for categorical features (`protocol_type`, `service`, `flag`, `class`)
+- Removed:
+  - Columns with >50% missing data
+  - Low-variance features (only one unique value)
+  - Sparse features (>90% zeros)
+- Applied `SelectKBest` with `mutual_info_classif` for feature selection
+- 80-20 Train-Test split
+- Final dataset saved as `train_data.csv` and `test_data.csv`
+
+---
+
+## 🧠 Models Implemented
+
+| Type             | Algorithms Used |
+|------------------|-----------------|
+| Classical Models | Logistic Regression, KNN, Decision Tree, Naive Bayes |
+| Ensemble Models  | Random Forest, AdaBoost, XGBoost, Voting Classifier |
+| SVM Variants     | Linear SVM, Non-linear SVM (RBF kernel) |
+| Neural Network   | Artificial Neural Network (ANN) |
+
+Each model was optimized using `GridSearchCV` and evaluated on cross-validation folds.
+
+---
+
+## 📈 Evaluation Metrics
+
+All models were evaluated using:
+
+- Accuracy
+- Precision
+- Recall
+- F1 Score
+- Confusion Matrix
+
+---
+
+## 🖥️ Frontend Features
+
+Frontend built using React.js and deployed on **Vercel**. Key features include:
+
+- 🔍 **Single Packet Prediction** — Enter packet features manually
+- 📤 **CSV Upload** — Upload datasets for bulk classification
+- 🌐 **Auto-Capture Mode** — Analyze real-time packet traffic (backend setup required)
+- 📚 **History Section** — View past predictions (stored in localStorage)
+- ℹ️ **About Section** — Overview of project, team, and usage instructions
+
+---
+
+## 🌐 Live Packet Capture
+
+We provide a backend script (`packetcapture.py`) for real-time packet analysis.
+
+### Requirements:
+- `scapy`
+- Admin/root permissions to capture packets
+
+### How it works:
+- Run the Python backend locally
+- Hit "Start Capture" in the frontend
+- Packets from your network interface will be captured, processed, and classified
+
+---
+
+## 📊 Results
+
+| Model              | Accuracy | Precision | Recall | F1 Score |
+|-------------------|----------|-----------|--------|----------|
+| XGBoost           | 99.66%   | 99.66%    | 99.66% | 99.66%   |
+| Random Forest     | 99.50%   | 99.50%    | 99.50% | 99.50%   |
+| KNN               | 99.36%   | 99.50%    | 99.50% | 99.50%   |
+| Decision Tree     | 99.44%   | 99.44%    | 99.44% | 99.44%   |
+| Non-Linear SVM    | 97.14%   | 95.24%    | 99.59% | 97.39%   |
+| ANN               | 95.87%   | 95.87%    | 95.87% | 95.87%   |
+| AdaBoost          | 96.59%   | 96.59%    | 96.59% | 96.59%   |
+| Bernoulli Naive Bayes | 92.72% | 92.72% | 92.72% | 92.71%   |
+| Logistic Regression | 88.71% | 88.72%    | 88.71% | 88.70%   |
+| Linear SVM        | 89.86%   | 85.29%    | 97.72% | 91.13%   |
+
+---
+
+## 🧪 How to Run
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/your-username/network-intrusion-detection.git
+cd network-intrusion-detection
+```
+
+### 2. Setup Python Environment
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Run Backend
+```bash
+python app.py
+```
+
+### 4. Setup and Run Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+🔧 Make sure to update the backend API URL in your frontend configuration if needed.
+
+## 🚀 Future Scope
+
+- Integrate deep learning models like CNNs or LSTMs for improved anomaly detection.
+
+- Explore newer and more comprehensive datasets like CICIDS2017 or UNSW-NB15.
+
+- Add real-time threat mitigation capabilities and alert systems.
+
+- Deploy in enterprise environments with scalable cloud infrastructure.
+
+- Integrate the system with SIEM (Security Information and Event Management) tools and dashboards.
+
+## 👨‍💻 Contributors
+
+| Name              | Roll Number     | Contributions                                   |
+|-------------------|------------------|-------------------------------------------------|
+| **Pratyush Chauhan**  | B23CM1030        | Implemented baseline models, designed project page |
+| **Dheeraj Kumar**     | B23CS1016        | Data preprocessing, model development, video recording |
+| **Dhruv Sharma**      | B23EE1086        | Model tuning, data cleaning, video preparation     |
+| **Ritik Nagar**       | B23EE1061        | Model training, data cleaning, documentation       |
+| **Luv Valecha**       | B23CS1093        | Backend implementation, feature engineering        |
+| **Shiv Jee Yadav**    | B23EE1095        | Evaluation, feature selection, backend support     |
+
+---
+
+## 📬 Contact & Feedback
+
+If you have any suggestions, feedback, or encounter any issues:
+
+- 🐛 Create an Issue
+- 📬 Reach out to any contributor via email or GitHub
+- 🤝 Feel free to fork the repository and contribute through Pull Requests
+
+---
+
+Thank you for exploring our project! 🚀
 
