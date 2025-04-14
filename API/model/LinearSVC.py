@@ -4,118 +4,67 @@ import os
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from tqdm import tqdm
-import pickle, json
+from sklearn.svm import LinearSVC
+import pickle
 import sys
 
-#add evaluator
+# Add evaluator
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from scripts.evaluate import ModelEvaluator
 
-# LinearSVM Implementation
-class LinearSVM:
-    def __init__(self, learning_rate=0.01, lambda_param=0.01, n_iterations=1000):
-        self.learning_rate = learning_rate
-        self.lambda_param = lambda_param  # Regularization parameter
-        self.n_iterations = n_iterations
-        self.w = None
-        self.b = None
-        self.scaler = None
+class SklearnLinearSVM:
+    def __init__(self, C=1.0, max_iter=1000, random_state=42):
+        #initialize the model
+        self.C = C
+        self.max_iter = max_iter
+        self.random_state = random_state
+        self.model = LinearSVC(
+            C=self.C,
+            max_iter=self.max_iter,
+            dual=False,  
+            random_state=self.random_state
+        )
+        self.scaler = StandardScaler()
         
-    def _initialize_weights(self, n_features):
-        # Initialize weights and bias
-        self.w = np.zeros(n_features)
-        self.b = 0
-        
-    def _hinge_loss(self, X, y):
-        # Calculate the hinge loss and gradients
-        n_samples = X.shape[0]
-        
-        # Calculate linear scores
-        scores = np.dot(X, self.w) + self.b
-        
-        # Calculate margins (y_i * (w^T * x_i + b))
-        margins = y * scores
-        
-        # Calculate hinge loss components
-        hinge_loss_components = np.maximum(0, 1 - margins)
-        
-        # Total regularized loss
-        loss = np.sum(hinge_loss_components) / n_samples + (self.lambda_param / 2) * np.dot(self.w, self.w)
-        
-        # Gradient calculation
-        mask = (hinge_loss_components > 0).astype(int)
-        dw = self.lambda_param * self.w - np.sum(X * (y * mask).reshape(-1, 1), axis=0) / n_samples
-        db = -np.sum(y * mask) / n_samples
-        
-        return loss, dw, db
-    
     def train(self, X, y, scale_data=True, verbose=False):
-        # Train the SVM model using gradient descent
-        
-        # Scale data if asked for it
+
+        # Scale data if requested
         if scale_data:
-            self.scaler = StandardScaler()
             X = self.scaler.fit_transform(X)
-  
-        # Convert y to -1, 1 format 
-        y_binary = np.where(y <= 0, -1, 1)
         
-        n_samples, n_features = X.shape
-        self._initialize_weights(n_features)
-        
-        loss_history = [] #store loss history
-        
-        iterator = tqdm(range(self.n_iterations)) if verbose else range(self.n_iterations)
-        
-        for i in iterator:
-            # Calculate loss and gradients
-            loss, dw, db = self._hinge_loss(X, y_binary)
-            loss_history.append(loss)
+        if verbose:
+            print("Training LinearSVC model...")
             
-            # Update weights and bias using gradient descent
-            self.w = self.w - self.learning_rate * dw
-            self.b = self.b - self.learning_rate * db
+        # Train the model
+        self.model.fit(X, y)
+        
+        if verbose:
+            print("Training complete.")
             
-            # Print progress
-            if verbose and (i+1) % 100 == 0:
-                print(f"Iteration {i+1}/{self.n_iterations}, Loss: {loss:.6f}")
-                
-        return loss_history
+        return self
     
     def predict(self, X):
-        # Predict class labels for samples in X
-        
+
         # Scale data if scaler exists
-        if self.scaler is not None:
-            X = self.scaler.transform(X)
- 
-        scores = np.dot(X, self.w) + self.b
-        y_pred = np.where(scores < 0, 0, 1)  # Convert back to 0, 1 format
-        return y_pred
+        X = self.scaler.transform(X)
+        return self.model.predict(X)
     
     def score(self, X, y):
-        # Calculate accuracy
+        #calculate accuracy
         y_pred = self.predict(X)
-        return np.mean(y_pred == y)
+        return accuracy_score(y, y_pred)
     
     def decision_function(self, X):
-        # Calculate decision function values
-        # Scale data if scaler exists
-        if self.scaler is not None:
-            X = self.scaler.transform(X)
-            
-        return np.dot(X, self.w) + self.b
+
+        X = self.scaler.transform(X)
+        return self.model.decision_function(X)
     
     def save_model(self, save_path: str):
-        # Save the trained model to a file.
-        if self.w is None:
-            raise ValueError("Model is not trained. Call train() before saving.")
 
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)  # check if the directory exists
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
         with open(save_path, "wb") as f:
             pickle.dump(self, f)
-            print("Model saved")
+            print(f"Model saved to {save_path}")
 
 if __name__ == "__main__":
     # Set training dataset path
@@ -136,14 +85,22 @@ if __name__ == "__main__":
     y_test = test_data[target_column].values
 
     # Create and train the model
-    custom_svm = LinearSVM(learning_rate=0.01, lambda_param=0.01, n_iterations=1000)
-    loss_history = custom_svm.train(X_train, y_train, scale_data=True, verbose=True)
+    svm = SklearnLinearSVM(C=100, max_iter=1000, random_state=42)
+    svm.train(X_train, y_train, scale_data=True, verbose=True)
+    
+    # Evaluate on test data
+    test_accuracy = svm.score(X_test, y_test)
+    print(f"Test accuracy: {test_accuracy:.4f}")
+    
+    # Detailed evaluation
+    y_pred = svm.predict(X_test)
+    print("\nClassification Report:")
+    print(classification_report(y_test, y_pred))
+    
+    print("\nConfusion Matrix:")
+    print(confusion_matrix(y_test, y_pred))
     
     # Save the trained model
     model_save_path = r"..\API\model\saved_models\LinearSVM.pkl"
-    custom_svm.save_model(model_save_path)
+    svm.save_model(model_save_path)
 
-    #evaluate model
-    evaluater = ModelEvaluator("LinearSVM.pkl")
-    evaluater.evaluate()
-    
