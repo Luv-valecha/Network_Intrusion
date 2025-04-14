@@ -21,7 +21,7 @@ function About() {
           Project Page
         </a>
         <a
-          href="#"
+          href="https://1drv.ms/b/c/9b83ad8f9c9cabcd/ERT6hCDqpmFFl1KAcR-fw1MBQldSltRD6SmwVu6B48JDXw?e=Az8iIp"
           target="_blank"
           rel="noopener noreferrer"
           className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl transition duration-300 shadow-md"
