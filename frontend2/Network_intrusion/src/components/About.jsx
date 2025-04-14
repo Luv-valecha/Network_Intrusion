@@ -131,7 +131,7 @@ function About() {
         <div className="flex flex-wrap justify-center gap-8 py-10 px-4">
           {[
             { name: "Luv Valecha", id: "B23CS1093", linkedin: "#", github: "#", pic: "pic.jpg" },
-            { name: "Shiv Jee Yadav", id: "B23EE1095", linkedin: "#", github: "#", pic: "temp_pic.jpg" },
+            { name: "Shiv Jee Yadav", id: "B23EE1095", linkedin: "#", github: "#", pic: "https://i.pinimg.com/originals/7a/1c/ba/7a1cba6cbdb9cf66793fcbf7b929b92b.jpg" },
             { name: "Ritik Nagar", id: "B23EE1061", linkedin: "#", github: "#", pic: "temp_pic.jpg" },
             { name: "Pratyush Chauhan", id: "B23CM1030", linkedin: "#", github: "#", pic: "temp_pic.jpg" },
             { name: "Dheeraj Kumar", id: "B23CS1016", linkedin: "#", github: "#", pic: "temp_pic.jpg" },
