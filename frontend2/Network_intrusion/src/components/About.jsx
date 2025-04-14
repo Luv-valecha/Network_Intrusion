@@ -11,6 +11,24 @@ function About() {
           Our Network Intrusion Detection System (IDS) utilizes machine learning to detect and prevent cyber threats in real-time. Deployed on Google Cloud, it ensures high scalability and security for your network.
         </p>
       </header>
+      <div className="w-full flex justify-end gap-4 mb-8 pr-4">
+        <a
+          href="https://luv-valecha.github.io/Network_Intrusion/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl transition duration-300 shadow-md"
+        >
+          Project Page
+        </a>
+        <a
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-xl transition duration-300 shadow-md"
+        >
+          Project Report
+        </a>
+      </div>
 
       {/* Project Overview Section */}
       <section className="mb-16">
@@ -110,40 +128,47 @@ function About() {
       <section className="mb-16">
         <h2 className="text-3xl font-semibold text-white mb-6 text-center">Meet the Team</h2>
 
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="flex flex-wrap justify-center gap-8 py-10 px-4">
           {[
-            { name: "Luv Valecha", id: "B23CS1093", linkedin: "#", github: "#" },
-            { name: "Shiv Jee Yadav", id: "B23EE1095", linkedin: "#", github: "#" },
-            { name: "Ritik Nagar", id: "B23EE1061", linkedin: "#", github: "#" },
-            { name: "Pratyush Chauhan", id: "B23CM1030", linkedin: "#", github: "#" },
-            { name: "Dheeraj Kumar", id: "B23CS1016", linkedin: "#", github: "#" },
-            { name: "Dhruv Sharma", id: "B23EE1086", linkedin: "#", github: "#" }
+            { name: "Luv Valecha", id: "B23CS1093", linkedin: "#", github: "#", pic: "pic.jpg" },
+            { name: "Shiv Jee Yadav", id: "B23EE1095", linkedin: "#", github: "#", pic: "temp_pic.jpg" },
+            { name: "Ritik Nagar", id: "B23EE1061", linkedin: "#", github: "#", pic: "temp_pic.jpg" },
+            { name: "Pratyush Chauhan", id: "B23CM1030", linkedin: "#", github: "#", pic: "temp_pic.jpg" },
+            { name: "Dheeraj Kumar", id: "B23CS1016", linkedin: "#", github: "#", pic: "temp_pic.jpg" },
+            { name: "Dhruv Sharma", id: "B23EE1086", linkedin: "#", github: "#", pic: "temp_pic.jpg" }
           ].map((member, index) => (
             <div
               key={index}
-              className="bg-gray-800 p-6 rounded-lg shadow-md w-full sm:w-1/2 lg:w-1/3 text-center"
+              className="bg-gradient-to-br from-gray-800 to-gray-900 text-white p-8 rounded-2xl shadow-lg w-full sm:w-3/4 md:w-[28rem] transition-transform hover:scale-105"
             >
-              <h3 className="text-xl font-semibold text-white">{member.name}</h3>
-              <p className="text-white mb-4">{member.id}</p>
-              <div className="flex justify-center gap-6">
-                <a
-                  href={member.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white hover:text-blue-400 text-2xl"
-                  title="LinkedIn"
-                >
-                  <i className="fab fa-linkedin"></i>
-                </a>
-                <a
-                  href={member.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white hover:text-gray-400 text-2xl"
-                  title="GitHub"
-                >
-                  <i className="fab fa-github"></i>
-                </a>
+              <div className="flex flex-col items-center">
+                <img
+                  src={member.pic}
+                  alt={member.name}
+                  className="w-28 h-28 rounded-full border-4 border-gray-700 object-cover mb-6 shadow-md"
+                />
+                <h3 className="text-2xl font-bold mb-1">{member.name}</h3>
+                <p className="text-sm text-gray-400 mb-4">{member.id}</p>
+                <div className="flex gap-6 mt-2">
+                  <a
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-blue-400 transition"
+                    title="LinkedIn"
+                  >
+                    <i className="fab fa-linkedin text-2xl"></i>
+                  </a>
+                  <a
+                    href={member.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-gray-400 transition"
+                    title="GitHub"
+                  >
+                    <i className="fab fa-github text-2xl"></i>
+                  </a>
+                </div>
               </div>
             </div>
           ))}
