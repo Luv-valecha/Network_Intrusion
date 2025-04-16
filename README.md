@@ -6,7 +6,7 @@ A machine learning-based project focused on detecting network intrusions using c
 
 ## 📂 Table of Contents
 
-- [Overview](#overview)
+- [Overview](#📌-overview)
 - [Dataset](#dataset)
 - [Tech Stack](#tech-stack)
 - [Data Preprocessing](#data-preprocessing)
@@ -178,17 +178,6 @@ npm run dev
 - Deploy in enterprise environments with scalable cloud infrastructure.
 
 - Integrate the system with SIEM (Security Information and Event Management) tools and dashboards.
-
-## 👨‍💻 Contributors
-
-| Name              | Roll Number     | Contributions                                   |
-|-------------------|------------------|-------------------------------------------------|
-| **Pratyush Chauhan**  | B23CM1030        | Implemented baseline models, designed project page |
-| **Dheeraj Kumar**     | B23CS1016        | Data preprocessing, model development, video recording |
-| **Dhruv Sharma**      | B23EE1086        | Model tuning, data cleaning, video preparation     |
-| **Ritik Nagar**       | B23EE1061        | Model training, data cleaning, documentation       |
-| **Luv Valecha**       | B23CS1093        | Backend implementation, feature engineering        |
-| **Shiv Jee Yadav**    | B23EE1095        | Evaluation, feature selection, backend support     |
 
 ---
 
