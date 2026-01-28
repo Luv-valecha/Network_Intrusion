@@ -135,7 +135,7 @@ function About() {
             { name: "Ritik Nagar", id: "B23EE1061", linkedin: "#", github: "#", pic: "temp_pic.jpg" },
             { name: "Pratyush Chauhan", id: "B23CM1030", linkedin: "#", github: "#", pic: "temp_pic.jpg" },
             { name: "Dheeraj Kumar", id: "B23CS1016", linkedin: "#", github: "#", pic: "temp_pic.jpg" },
-            { name: "Dhruv Sharma", id: "B23EE1086", linkedin: "#", github: "#", pic: "temp_pic.jpg" }
+            { name: "Dhruv Sharma", id: "B23EE1086", linkedin: "#", github: "#", pic: "f_society.jpg" }
           ].map((member, index) => (
             <div
               key={index}
