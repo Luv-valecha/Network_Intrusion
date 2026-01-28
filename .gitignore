@@ -7,3 +7,9 @@ API/data/processed/train_data.csv
 API/data/processed/test_data.csv
 API/app/__pycache__
 frontend2/Network_intrusion/node_modules
+*.env
+__pycache__/
+*.pyc
+.env
+node_modules/
+dist/

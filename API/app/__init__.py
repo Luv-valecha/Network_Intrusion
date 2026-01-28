@@ -8,21 +8,20 @@ from werkzeug.utils import secure_filename  # Import for file handling
 
 # Ensure Flask serves only API endpoints
 app = Flask(__name__)
-CORS(app)  # Enable CORS
+CORS(app, resources={r"/*": {"origins": [
+    "http://localhost:5173",  # for local dev
+    "https://network-intrusion.vercel.app"  # your deployed frontend
+]}})
 
-# Load the VotingClassifier model
-model_path = os.path.join('API', 'model', 'saved_models', 'voting_model.pkl')
-with open(model_path, 'rb') as model_file:
-    model = joblib.load(model_file)  # Use joblib.load
+ # Enable CORS
 
-# Load the encoders for 'service' and 'flag'
-service_encoder_path = os.path.join('API', 'model', 'saved_models', 'service_encoder.pkl')
-with open(service_encoder_path, 'rb') as service_encoder_file:
-    service_encoder = joblib.load(service_encoder_file)  # Use joblib.load
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_DIR = os.path.join(BASE_DIR, '..', 'model', 'saved_models')
 
-flag_encoder_path = os.path.join('API', 'model', 'saved_models', 'flag_encoder.pkl')    
-with open(flag_encoder_path, 'rb') as flag_encoder_file:
-    flag_encoder = joblib.load(flag_encoder_file)  # Use joblib.load
+model = joblib.load(os.path.join(MODEL_DIR, 'voting_model.pkl'))
+service_encoder = joblib.load(os.path.join(MODEL_DIR, 'service_encoder.pkl'))
+flag_encoder = joblib.load(os.path.join(MODEL_DIR, 'flag_encoder.pkl'))
+
 
 @app.route('/')
 def index():
@@ -119,4 +118,4 @@ def predict_csv():
         return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=8080)

@@ -10,21 +10,18 @@ from werkzeug.utils import secure_filename  # Import for file handling
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": [
     "http://localhost:5173",  # for local dev
-    "https://network-intrusion.onrender.com"  # your deployed frontend
+    "https://network-intrusion.vercel.app"  # your deployed frontend
 ]}})
 
  # Enable CORS
 
-# Load the VotingClassifier model
-with open(r'../model/saved_models/voting_model.pkl', 'rb') as model_file:
-    model = joblib.load(model_file)  # Use joblib.load
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_DIR = os.path.join(BASE_DIR, '..', 'model', 'saved_models')
 
-# Load the encoders for 'service' and 'flag'
-with open(r'../model/saved_models/service_encoder.pkl', 'rb') as service_encoder_file:
-    service_encoder = joblib.load(service_encoder_file)  # Use joblib.load
+model = joblib.load(os.path.join(MODEL_DIR, 'voting_model.pkl'))
+service_encoder = joblib.load(os.path.join(MODEL_DIR, 'service_encoder.pkl'))
+flag_encoder = joblib.load(os.path.join(MODEL_DIR, 'flag_encoder.pkl'))
 
-with open(r'../model/saved_models/flag_encoder.pkl', 'rb') as flag_encoder_file:
-    flag_encoder = joblib.load(flag_encoder_file)  # Use joblib.load
 
 @app.route('/')
 def index():
