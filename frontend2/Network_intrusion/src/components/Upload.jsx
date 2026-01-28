@@ -6,6 +6,7 @@ const Upload = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const fileInputRef = useRef();
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const handleFileSelect = (e) => {
     const selectedFile = e.target.files[0];
@@ -28,7 +29,7 @@ const Upload = () => {
     setResult(null);
 
     try {
-      const response = await fetch('https://net-intrusion-358654395984.asia-south1.run.app/predict_csv', {
+      const response = await fetch(`${API_URL}/predict_csv`, {
         method: 'POST',
         body: formData
       });

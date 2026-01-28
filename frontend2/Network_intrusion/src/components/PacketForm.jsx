@@ -25,10 +25,12 @@ const PacketForm = () => {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     localStorage.setItem('packetHistory', JSON.stringify(history));
   }, [history]);
-
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -39,7 +41,7 @@ const PacketForm = () => {
     setSubmitted(false);
 
     try {
-      const response = await fetch('https://net-intrusion-358654395984.asia-south1.run.app/predict', {
+      const response = await fetch(`${API_URL}/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

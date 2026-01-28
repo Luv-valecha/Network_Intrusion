@@ -11,6 +11,7 @@ function AutoCapture() {
     const stored = localStorage.getItem('packetHistory');
     return stored ? JSON.parse(stored) : [];
   });
+  const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     localStorage.setItem('packetHistory', JSON.stringify(history));
@@ -36,7 +37,7 @@ function AutoCapture() {
       const predictedData = await Promise.all(
         json.map(async (packet) => {
           try {
-            const response = await fetch('https://net-intrusion-358654395984.asia-south1.run.app/predict', {
+            const response = await fetch(`${API_URL}/predict`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(packet),
